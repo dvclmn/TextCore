@@ -29,7 +29,7 @@ struct MarkdownTextViewTests {
       with: "░",
       toFill: self.requiredColumnCount,
       caps: LineCaps("//", "//", hasPadding: true),
-      hasHorizontalPadding: true
+      textPadding: true
     )
     
     #expect(result.count == requiredColumnCount)

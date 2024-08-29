@@ -13,6 +13,10 @@
 import SwiftUI
 import BaseHelpers
 
+public enum PaddedContentType {
+  case text
+  case cap
+}
 
 public struct LineCaps {
   var leading: String
@@ -39,50 +43,66 @@ public struct TextCore {
     alignment: Alignment = .center,
     sliceCharacter: Character = "@",
     caps: LineCaps? = nil, /// This is `String` in case of multi-character caps
-    hasHorizontalPadding: Bool = true
+    textPadding: Bool = true
   ) -> String {
     
+    /// If there is no split character present in the provided `text`, this will simply return a
+    /// `[String.SubSequence]` with the full text.
+    ///
+    let components: [String.SubSequence] = text.split(separator: sliceCharacter, omittingEmptySubsequences: false)
+    print("Component count: \(components.count)")
+    print("Components: \(components)\n")
     
-    let components = text.split(separator: sliceCharacter, omittingEmptySubsequences: false)
+    /// This is the number of characters in the text content only. This will be added
+    /// to the total count, including caps/padding, to compare against the
+    /// `toFill width: Int` parameter.
+    ///
     let contentWidth = components.reduce(0) { $0 + $1.count }
+    print("Content width: \(contentWidth)")
     
-    let leadingCap = caps?.leading ?? ""
-    let trailingCap = caps?.trailing ?? ""
     
-    let capPadding = (caps?.hasPadding == true) ? "C" : ""
-    let capPaddingWidth = capPadding.count * 2
+    let leadingCap: String = caps?.leading ?? ""
+    let trailingCap: String = caps?.trailing ?? ""
     
-    let horizontalPadding = hasHorizontalPadding ? "T" : ""
-    let horizontalPaddingWidth = horizontalPadding.count * 2
+    let capPaddingCharacter = (caps?.hasPadding == true) ? "C" : ""
+    let capPaddingWidth = capPaddingCharacter.count * 2
     
-    let totalFixedWidth = contentWidth + leadingCap.count + trailingCap.count + capPaddingWidth + horizontalPaddingWidth
+    let textPaddingCharacter = textPadding ? "T" : ""
+    let textPaddingWidth = textPaddingCharacter.count * 2
+    
+    let totalFixedWidth = contentWidth + leadingCap.count + trailingCap.count + capPaddingWidth + textPaddingWidth
+    
+    /// Calculates the space left after accounting for all the text content, caps, and
+    /// padding — and ensures the value does not fall below zero.
+    ///
     let availableSpace = max(0, width - totalFixedWidth)
     
-    func distributeSpace(_ space: Int) -> (left: Int, right: Int) {
+    
+    func distributePadding(_ padding: Int, for contentType: PaddedContentType) -> (left: Int, right: Int) {
       switch alignment {
         case .leading:
-          return (0, space)
+          return (0, padding)
         case .trailing:
-          return (space, 0)
+          return (padding, 0)
         default: // .center
-          let left = space / 2
-          return (left, space - left)
+          let left = padding / 2
+          return (left, padding - left)
       }
     }
     
     if components.count <= 1 {
-      let (leftPadding, rightPadding) = distributeSpace(availableSpace)
+      let (leftPadding, rightPadding) = distributePadding(availableSpace, for: .text)
       
-      return leadingCap + capPadding + horizontalPadding +
+      return leadingCap + capPaddingCharacter + textPaddingCharacter +
       String(repeating: paddingString, count: leftPadding) +
       text +
       String(repeating: paddingString, count: rightPadding) +
-      horizontalPadding + capPadding + trailingCap
+      textPaddingCharacter + capPaddingCharacter + trailingCap
     } else {
       let spacesPerSlice = availableSpace / (components.count - 1)
       let extraSpaces = availableSpace % (components.count - 1)
       
-      var result = leadingCap + capPadding + horizontalPadding
+      var result = leadingCap + capPaddingCharacter + textPaddingCharacter
       
       for (index, component) in components.enumerated() {
         result += component
@@ -92,7 +112,7 @@ public struct TextCore {
         }
       }
       
-      result += horizontalPadding + capPadding + trailingCap
+      result += textPaddingCharacter + capPaddingCharacter + trailingCap
       
       return result
     }
@@ -157,40 +177,48 @@ struct TextCoreExampleView: View {
       
       Text(TextCore.widthCounter(self.width, style: .full))
       
-      Text(TextCore.padLine(
+      let text: String = """
+
+      \(TextCore.padLine(
           "Cap & text padding",
           with: "░",
           toFill: 42,
           alignment: .leading,
           caps: LineCaps("|", "|", hasPadding: true),
-          hasHorizontalPadding: true
+          textPadding: true
         ))
-      
-      Text(TextCore.padLine(
+      \(TextCore.padLine(
         "Has text padding",
         with: "░",
         toFill: 42,
         alignment: .center,
-        hasHorizontalPadding: true
+        textPadding: true
       ))
-      
-      Text(TextCore.padLine(
+      \(TextCore.padLine(
         "Has text-pad, no cap-pad",
         with: "░",
         toFill: 42,
         alignment: .trailing,
         caps: LineCaps("|", "|", hasPadding: false),
-        hasHorizontalPadding: true
+        textPadding: true
       ))
-      
-      Text(TextCore.padLine(
+      \(TextCore.padLine(
         "No text-pad. Has cap-pad",
         with: "░",
         toFill: 42,
         alignment: .center,
         caps: LineCaps("|", "|", hasPadding: true),
-        hasHorizontalPadding: false
+        textPadding: false
       ))
+      \(TextCore.padLine(
+        "Split ->@<- Split",
+        with: "░",
+        toFill: 42
+      ))
+      
+      """
+      
+      Text(text)
 //      .border(Color.green.opacity(0.3))
     }
     .textSelection(.enabled)
