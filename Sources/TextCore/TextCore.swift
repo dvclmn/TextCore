@@ -41,15 +41,18 @@ public struct TextCore {
     caps: LineCaps? = nil, /// This is `String` in case of multi-character caps
     hasHorizontalPadding: Bool = true
   ) -> String {
+    
+    
     let components = text.split(separator: sliceCharacter, omittingEmptySubsequences: false)
     let contentWidth = components.reduce(0) { $0 + $1.count }
     
-    var leadingCap = caps?.leading ?? ""
-    var trailingCap = caps?.trailing ?? ""
-    let capPadding = (caps?.hasPadding == true) ? " " : ""
+    let leadingCap = caps?.leading ?? ""
+    let trailingCap = caps?.trailing ?? ""
+    
+    let capPadding = (caps?.hasPadding == true) ? "C" : ""
     let capPaddingWidth = capPadding.count * 2
     
-    let horizontalPadding = hasHorizontalPadding ? " " : ""
+    let horizontalPadding = hasHorizontalPadding ? "T" : ""
     let horizontalPaddingWidth = horizontalPadding.count * 2
     
     let totalFixedWidth = contentWidth + leadingCap.count + trailingCap.count + capPaddingWidth + horizontalPaddingWidth
@@ -155,22 +158,42 @@ struct TextCoreExampleView: View {
       Text(TextCore.widthCounter(self.width, style: .full))
       
       Text(TextCore.padLine(
-          "Should be padded",
+          "Cap & text padding",
           with: "░",
           toFill: 42,
           alignment: .leading,
-          caps: LineCaps("|", "|"),
+          caps: LineCaps("|", "|", hasPadding: true),
           hasHorizontalPadding: true
         ))
+      
       Text(TextCore.padLine(
-        "Should be padded",
+        "Has text padding",
         with: "░",
         toFill: 42,
         alignment: .center,
         hasHorizontalPadding: true
       ))
+      
+      Text(TextCore.padLine(
+        "Has text-pad, no cap-pad",
+        with: "░",
+        toFill: 42,
+        alignment: .trailing,
+        caps: LineCaps("|", "|", hasPadding: false),
+        hasHorizontalPadding: true
+      ))
+      
+      Text(TextCore.padLine(
+        "No text-pad. Has cap-pad",
+        with: "░",
+        toFill: 42,
+        alignment: .center,
+        caps: LineCaps("|", "|", hasPadding: true),
+        hasHorizontalPadding: false
+      ))
 //      .border(Color.green.opacity(0.3))
     }
+    .textSelection(.enabled)
     .border(Color.green.opacity(0.1))
     .monospaced()
     .font(.system(size: 16))
