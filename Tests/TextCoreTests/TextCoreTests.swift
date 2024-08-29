@@ -28,8 +28,8 @@ struct MarkdownTextViewTests {
       self.exampleTitle,
       with: "░",
       toFill: self.requiredColumnCount,
-      caps: LineCaps("//", "//", hasPadding: true),
-      textPadding: true
+      caps: LineCaps("//", "//", hasExtraSpaces: true),
+      hasSpaceAroundText: true
     )
     
     #expect(result.count == requiredColumnCount)

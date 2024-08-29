@@ -21,16 +21,16 @@ public enum PaddedContentType {
 public struct LineCaps {
   var leading: String
   var trailing: String
-  var hasPadding: Bool
+  var hasExtraSpaces: Bool
   
   public init(
     _ leading: String,
     _ trailing: String,
-    hasPadding: Bool = true
+    hasExtraSpaces: Bool = true
   ) {
     self.leading = leading
     self.trailing = trailing
-    self.hasPadding = hasPadding
+    self.hasExtraSpaces = hasExtraSpaces
   }
 }
 
@@ -43,7 +43,7 @@ public struct TextCore {
     alignment: Alignment = .center,
     sliceCharacter: Character = "@",
     caps: LineCaps? = nil, /// This is `String` in case of multi-character caps
-    textPadding: Bool = true
+    hasSpaceAroundText: Bool = true
   ) -> String {
     
     /// If there is no split character present in the provided `text`, this will simply return a
@@ -64,13 +64,48 @@ public struct TextCore {
     let leadingCap: String = caps?.leading ?? ""
     let trailingCap: String = caps?.trailing ?? ""
     
-    let capPaddingCharacter = (caps?.hasPadding == true) ? "C" : ""
-    let capPaddingWidth = capPaddingCharacter.count * 2
     
-    let textPaddingCharacter = textPadding ? "T" : ""
-    let textPaddingWidth = textPaddingCharacter.count * 2
     
-    let totalFixedWidth = contentWidth + leadingCap.count + trailingCap.count + capPaddingWidth + textPaddingWidth
+    let capExtraSpaceSingle: String = (caps?.hasExtraSpaces == true) ? "%" : ""
+    var capExtraSpaceWidth: Int
+    var capExtraSpace: (String, String)
+    
+    let textExtraSpaceSingle: String = hasSpaceAroundText ? "^" : ""
+    var textExtraSpaceWidth: Int
+    var textExtraSpace: (String, String)
+    
+    
+    switch alignment {
+      case .leading:
+        capExtraSpace = ("", capExtraSpaceSingle)
+        capExtraSpaceWidth = 1
+        
+        textExtraSpace = ("", textExtraSpaceSingle)
+        textExtraSpaceWidth = 1
+        
+      case .trailing:
+        capExtraSpace = (capExtraSpaceSingle, "")
+        capExtraSpaceWidth = 1
+        
+        textExtraSpace = (textExtraSpaceSingle, "")
+        textExtraSpaceWidth = 1
+        
+      default: // .center
+        capExtraSpace = (capExtraSpaceSingle, capExtraSpaceSingle)
+        capExtraSpaceWidth = 2
+        
+        textExtraSpace = (textExtraSpaceSingle, textExtraSpaceSingle)
+        textExtraSpaceWidth = 2
+        
+    }
+
+    
+    
+//    let leadingPadding = (capPadding + textPadding).replacingOccurrences(of: "CT", with: "C")
+//    let trailingPadding = (textPadding + capPadding).replacingOccurrences(of: "TC", with: "C")
+
+    
+    let totalFixedWidth = contentWidth + leadingCap.count + trailingCap.count + capExtraSpaceWidth + textExtraSpaceWidth
     
     /// Calculates the space left after accounting for all the text content, caps, and
     /// padding — and ensures the value does not fall below zero.
@@ -78,31 +113,64 @@ public struct TextCore {
     let availableSpace = max(0, width - totalFixedWidth)
     
     
-    func distributePadding(_ padding: Int, for contentType: PaddedContentType) -> (left: Int, right: Int) {
+    func distributeDynamicPadding(_ padding: Int) -> (left: Int, right: Int) {
+
       switch alignment {
         case .leading:
           return (0, padding)
         case .trailing:
           return (padding, 0)
         default: // .center
-          let left = padding / 2
-          return (left, padding - left)
+          let left = max(0, padding / 2)
+          return (left, max(0, padding - left))
       }
     }
     
+    
+    
+    /// This condition applies when there was no split character found in the text,
+    /// so the `alignment` argument is used to determine where the padding
+    /// should be placed.
+    ///
     if components.count <= 1 {
-      let (leftPadding, rightPadding) = distributePadding(availableSpace, for: .text)
       
-      return leadingCap + capPaddingCharacter + textPaddingCharacter +
-      String(repeating: paddingString, count: leftPadding) +
-      text +
-      String(repeating: paddingString, count: rightPadding) +
-      textPaddingCharacter + capPaddingCharacter + trailingCap
+//      if caps != nil {
+        
+//        return "Caps"
+//        let (leftPadding, rightPadding) = distributeDynamicPadding(availableSpace)
+//        
+//        return leadingCap + capExtraSpace + textExtraSpace +
+//        String(repeating: paddingString, count: leftPadding) +
+//        text +
+//        String(repeating: paddingString, count: rightPadding) +
+//        textExtraSpace + capExtraSpace + trailingCap
+        
+        
+//      } else {
+        
+        let (leftPadding, rightPadding) = distributeDynamicPadding(availableSpace)
+        
+        
+        
+      return leadingCap + capExtraSpace.0
+        + String(repeating: paddingString, count: leftPadding)
+      + textExtraSpace.0 + text + textExtraSpace.1
+        + String(repeating: paddingString, count: rightPadding)
+      + capExtraSpace.1 + trailingCap
+//      }
+      
+
+      
+      
+      
     } else {
+      
+      /// There *was* a split character provided
+      ///
       let spacesPerSlice = availableSpace / (components.count - 1)
       let extraSpaces = availableSpace % (components.count - 1)
       
-      var result = leadingCap + capPaddingCharacter + textPaddingCharacter
+      var result = leadingCap + capExtraSpaceSingle + textExtraSpaceSingle
       
       for (index, component) in components.enumerated() {
         result += component
@@ -112,7 +180,9 @@ public struct TextCore {
         }
       }
       
-      result += textPaddingCharacter + capPaddingCharacter + trailingCap
+      result += textExtraSpaceSingle + capExtraSpaceSingle + trailingCap
+      
+      
       
       return result
     }
@@ -171,6 +241,9 @@ struct TextCoreExampleView: View {
   
   let width: Int = 42
   
+  let capSpace: String = "%"
+  let textSpace: String = "^"
+  
   var body: some View {
     
     VStack {
@@ -179,37 +252,64 @@ struct TextCoreExampleView: View {
       
       let text: String = """
 
+      LineCap spacing = \(capSpace)
+      Text spacing = \(textSpace)
+      
+      LineCaps, with spacing:
       \(TextCore.padLine(
           "Cap & text padding",
           with: "░",
           toFill: 42,
           alignment: .leading,
-          caps: LineCaps("|", "|", hasPadding: true),
-          textPadding: true
+          caps: LineCaps("|", "|", hasExtraSpaces: true),
+          hasSpaceAroundText: true
         ))
-      \(TextCore.padLine(
-        "Has text padding",
-        with: "░",
-        toFill: 42,
-        alignment: .center,
-        textPadding: true
-      ))
       \(TextCore.padLine(
         "Has text-pad, no cap-pad",
         with: "░",
         toFill: 42,
-        alignment: .trailing,
-        caps: LineCaps("|", "|", hasPadding: false),
-        textPadding: true
+        alignment: .center,
+        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        hasSpaceAroundText: true
       ))
       \(TextCore.padLine(
         "No text-pad. Has cap-pad",
         with: "░",
         toFill: 42,
-        alignment: .center,
-        caps: LineCaps("|", "|", hasPadding: true),
-        textPadding: false
+        alignment: .trailing,
+        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        hasSpaceAroundText: true
       ))
+      
+
+      ---
+      
+      No LineCaps, with spacing:
+      \(TextCore.padLine(
+        "Text padding center",
+        with: "░",
+        toFill: 42,
+        alignment: .leading,
+        hasSpaceAroundText: true
+      ))
+      \(TextCore.padLine(
+        "Text padding center",
+        with: "░",
+        toFill: 42,
+        alignment: .center,
+        hasSpaceAroundText: true
+      ))
+      \(TextCore.padLine(
+        "Text padding center",
+        with: "░",
+        toFill: 42,
+        alignment: .trailing,
+        hasSpaceAroundText: true
+      ))
+      
+      ---
+      
+      
       \(TextCore.padLine(
         "Split ->@<- Split",
         with: "░",
