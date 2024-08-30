@@ -62,8 +62,8 @@ public struct TextCore {
     /// Result: `^░░░░░^Two splitsx░░░░░^Split at beggining`
     /// Or, result: `Two splits^░░░░░░░░░░^Split at beggining`
     let splitTextChunk: [String.SubSequence] = text.split(separator: sliceCharacter, omittingEmptySubsequences: false)
-//    print("Component count: \(splitTextChunk.count)")
-//    print("Components: \(splitTextChunk)\n\n")
+    //    print("Component count: \(splitTextChunk.count)")
+    //    print("Components: \(splitTextChunk)\n\n")
     
     /// This is the number of characters in the text content only. This will be added
     /// to the total count, including caps/padding, to compare against the
@@ -71,35 +71,69 @@ public struct TextCore {
     ///
     let contentWidth = splitTextChunk.reduce(0) { $0 + $1.count }
     
-    let leadingCap: String = caps?.leading ?? ""
-    let trailingCap: String = caps?.trailing ?? ""
+    
+    /// Cap content, space and width
+    ///
+    var finalCaps: (leading: String, trailing: String) = ("", "")
+    
+    if let caps = caps {
+      
+      let extraSpace = (caps.hasExtraSpaces ? "_" : "")
+      
+      let leading = caps.leading + extraSpace
+      let trailing = extraSpace + caps.trailing
+      
+      finalCaps = (leading, trailing)
+    }
+    
+    let finalCapsWidth: (leading: Int, trailing: Int) = (finalCaps.leading.count, finalCaps.trailing.count)
     
     
+    /// Text space and width
+    ///
+    /// This will be based heavily on the number of splits. Let's write this out.
+    ///
+    /// Without adjustment, there will be 2x spaces per split (provided of course
+    /// the `hasSpaceAroundText` option is true).
+    ///
+    /// If a split happens right at the end, or right at the beginning (and I also need
+    /// to take into account edge cases like two splits in a row `@@`, which is invalid),
+    /// then the leading or trailing space should be removed.
+    ///
+    /// We subtract `1` below, so we get an accurate count of the split characters
+    /// used. For instance, if the user splits the text in `3` places, as in the example
+    /// below, we actually get `4` components.
+    ///
+    /// `"@Here is some@ text to@ split"`
+    /// `["", "Here is some", " text to", " split"]`
+    ///
+    let splitCount: Int = splitTextChunk.count - 1
     
-    let capExtraSpaceSingle: String = (caps?.hasExtraSpaces == true) ? "_" : ""
-    let capExtraSpaceWidth: Int = 2
+    /// I need to find out now if any of the splits happened at the beginning or end,
+    /// so I can remove the right amount of spaces from the count.
+    ///
+    ///
+    let textSpaceCount: Int = splitCount * 2
     
-    let textExtraSpaceSingle: String = hasSpaceAroundText ? "^" : ""
-    var textExtraSpaceWidth: Int
+    
+    let textExtraSpaceCharacter: String = hasSpaceAroundText ? "^" : ""
     var textExtraSpace: (leading: String, trailing: String)
     
     
     switch alignment {
       case .leading:
-        textExtraSpace = ("", textExtraSpaceSingle)
-        textExtraSpaceWidth = 1
+        textExtraSpace = ("", textExtraSpaceCharacter)
         
       case .trailing:
-        textExtraSpace = (textExtraSpaceSingle, "")
-        textExtraSpaceWidth = 1
+        textExtraSpace = (textExtraSpaceCharacter, "")
         
       default: // .center
-        textExtraSpace = (textExtraSpaceSingle, textExtraSpaceSingle)
-        textExtraSpaceWidth = 2
-        
+        textExtraSpace = (textExtraSpaceCharacter, textExtraSpaceCharacter)
     }
     
-    let totalFixedWidth = contentWidth + leadingCap.count + trailingCap.count + capExtraSpaceWidth + textExtraSpaceWidth
+    let finalTextSpaceWidth: (leading: Int, trailing: Int) = (textExtraSpace.leading.count, textExtraSpace.trailing.count)
+    
+    let totalFixedWidth = contentWidth + finalCapsWidth.leading + finalCapsWidth.trailing + finalTextSpaceWidth.leading + finalTextSpaceWidth.trailing
     
     
     /// Calculates the space left after accounting for all the text content, caps, and
@@ -107,21 +141,25 @@ public struct TextCore {
     ///
     let availableSpace = max(0, width - totalFixedWidth)
     
-    let _: String = """
+    let metrics: String = """
+    
+    ---
     Content: \(splitTextChunk)
-    Total width added up: \(totalFixedWidth)
+    
     Content width: \(contentWidth)
-    Caps: \(leadingCap.count + trailingCap.count), and their spaces: \(capExtraSpaceWidth)
-    Text extra spaces count: \(textExtraSpaceWidth)
+    Caps: \(finalCaps), and their width: \(finalCapsWidth)
+    How many splits? \(splitCount)
     
     Provided space: \(width)
-    Final available width: \(availableSpace)
+    Total content width inc. spaces & caps: \(totalFixedWidth)
     
+    Remaining available width, to be padded out: \(availableSpace)
+    ---
     
     
     """
     
-//    print(metrics)
+    print(metrics)
     
     func distributeDynamicPadding(_ padding: Int) -> (left: Int, right: Int) {
       
@@ -146,12 +184,15 @@ public struct TextCore {
       
       let (leftPadding, rightPadding) = distributeDynamicPadding(availableSpace)
       
-      return leadingCap + capExtraSpaceSingle
+      let result = finalCaps.leading
+      /// The first lot of padding
       + String(repeating: paddingString, count: leftPadding)
       + textExtraSpace.0 + text + textExtraSpace.1
+      /// The second lot of padding
       + String(repeating: paddingString, count: rightPadding)
-      + capExtraSpaceSingle + trailingCap
+      + finalCaps.trailing
       
+      return result
       
     } else {
       
@@ -160,7 +201,6 @@ public struct TextCore {
       /// `components.count - 1` gives us the total number of gaps between
       /// components — always one less than the number of components.
       ///
-      
       
       let paddingPerSlice: Int = availableSpace / (splitTextChunk.count - 1)
       
@@ -195,14 +235,15 @@ public struct TextCore {
       ///
       let leftoverPadding = availableSpace % (splitTextChunk.count - 1)
       
-      var result = leadingCap + capExtraSpaceSingle
+      var result = "leadingCap + capExtraSpaceSingle"
+      //      var result = leadingCap + capExtraSpaceSingle
       
       /// Enumerates the components. More than one split character is supported.
       ///
       for (index, textContent) in splitTextChunk.enumerated() {
         
-//        let leadingSpace = index == 0 ? textExtraSpace.0 : "x"
-//        let trailingSpace = textExtraSpace.1
+        //        let leadingSpace = index == 0 ? textExtraSpace.0 : "x"
+        //        let trailingSpace = textExtraSpace.1
         
         result += textContent
         
@@ -238,9 +279,10 @@ public struct TextCore {
           
           /// This is where the padding is actually added, for each split
           ///
-          result += textExtraSpace.leading
-          + String(repeating: paddingString, count: padding)
-          + textExtraSpace.trailing
+          //          result += textExtraSpace.leading
+          //          + String(repeating: paddingString, count: padding)
+          //          + textExtraSpace.trailing
+          
           
         } else {
           //          result += "Butts"
@@ -248,7 +290,7 @@ public struct TextCore {
         
       }
       
-      result += capExtraSpaceSingle + trailingCap
+      result += "capExtraSpaceSingle + trailingCap"
       
       return result
     }

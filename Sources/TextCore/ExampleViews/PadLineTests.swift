@@ -159,7 +159,7 @@ extension TextCoreExampleView {
     )
     output.appendString(
       TextCore.padLine(
-        "@Two splits@Split at begin@ning",
+        "@Here is some@ text to@ split",
         with: "░",
         toFill: width,
         caps: LineCaps(cap, cap)
