@@ -9,184 +9,6 @@ import SwiftUI
 import BaseHelpers
 import Foundation
 
-
-
-struct TextCoreExampleView: View {
-  
-  let width: Int = 42
-  
-  let capSpace: String = "%"
-  let textSpace: String = "^"
-  
-  var body: some View {
-    
-    VStack {
-      
-      Text(TextCore.widthCounter(self.width, style: .full))
-      
-      Text(styledText)
-      
-    }
-    .textSelection(.enabled)
-    .border(Color.green.opacity(0.1))
-    .monospaced()
-    .font(.system(size: 16))
-    .padding(40)
-    .frame(width: 600, height: 770)
-    //    .cellGrid(grid: GlyphGrid(cell: .example, dimensions: .example, type: .interface), autoSize: true)
-    .background(.black.opacity(0.6))
-    
-  }
-}
-
-extension TextCoreExampleView {
-  
-
-  var styledText: AttributedString {
-    
-    var output = AttributedString()
-    
-    output.appendString("# LineCaps, with spacing")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Cap & text padding",
-        with: "░",
-        toFill: 42,
-        alignment: .leading,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      )
-    )
-    
-    output.appendString(
-      TextCore.padLine(
-        "Has text-pad, no cap-pad",
-        with: "░",
-        toFill: 42,
-        alignment: .center,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      )
-    )
-    
-    output.appendString(
-      TextCore.padLine(
-        "No text-pad. Has cap-pad",
-        with: "░",
-        toFill: 42,
-        alignment: .trailing,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      )
-    )
-    
-    output.addLineBreak()
-    
-    output.appendString("# No LineCaps, with spacing")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: 42,
-        alignment: .leading,
-        hasSpaceAroundText: true
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: 42,
-        alignment: .center,
-        hasSpaceAroundText: true
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: 42,
-        alignment: .trailing,
-        hasSpaceAroundText: true
-      )
-    )
-    
-    
-    output.addLineBreak()
-    
-    output.appendString("# No LineCaps, with spacing:")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Split ->@<- Split",
-        with: "░",
-        toFill: 42
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "An icon@Some nice text",
-        with: "░",
-        toFill: 42
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "@Two splits@Split at begin@ning",
-        with: "░",
-        toFill: 42
-      )
-    )
-    
-   
-    
-    
-//    for characters in output.characters {
-//      
-////      print("Match: \(characters)")
-//      
-////      print()
-//      
-//      if characters.isNewline {
-//        print("New line: \(characters)")
-//      }
-//      
-//    }
-    
-    
-    let pattern: Regex<Substring> = /\#\s.*/
-    
-    let ranges = output.getAllRanges(matching: pattern)
-      
-    print("How many ranges? \(ranges.count)")
-//      output[range].setAttributes(.blackOnWhite)
-      
-    for range in ranges {
-      print("Ranges: \(output[range])")
-      output[range].setAttributes(.blackOnWhite)
-    }
-      
-    
-    
-    
-    
-    return output
-    
-  }
-  
-  
-}
-
-#Preview {
-  TextCoreExampleView()
-}
-
-
-
-
-
 public enum PaddedContentType {
   case text
   case cap
@@ -259,7 +81,7 @@ public struct TextCore {
     
     let textExtraSpaceSingle: String = hasSpaceAroundText ? "^" : ""
     var textExtraSpaceWidth: Int
-    var textExtraSpace: (String, String)
+    var textExtraSpace: (leading: String, trailing: String)
     
     
     switch alignment {
@@ -285,7 +107,7 @@ public struct TextCore {
     ///
     let availableSpace = max(0, width - totalFixedWidth)
     
-    let metrics: String = """
+    let _: String = """
     Content: \(splitTextChunk)
     Total width added up: \(totalFixedWidth)
     Content width: \(contentWidth)
@@ -379,8 +201,8 @@ public struct TextCore {
       ///
       for (index, textContent) in splitTextChunk.enumerated() {
         
-        var leadingSpace = index == 0 ? textExtraSpace.0 : "x"
-        var trailingSpace = textExtraSpace.1
+//        let leadingSpace = index == 0 ? textExtraSpace.0 : "x"
+//        let trailingSpace = textExtraSpace.1
         
         result += textContent
         
@@ -416,9 +238,9 @@ public struct TextCore {
           
           /// This is where the padding is actually added, for each split
           ///
-          result += leadingSpace
+          result += textExtraSpace.leading
           + String(repeating: paddingString, count: padding)
-          + trailingSpace
+          + textExtraSpace.trailing
           
         } else {
           //          result += "Butts"

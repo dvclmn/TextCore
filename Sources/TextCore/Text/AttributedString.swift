@@ -99,11 +99,7 @@ public extension AttributedString {
     }
     return nil
   }
-  
- 
-  
-  
-  
+
 //  func getAllRangesIncremental(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {
 //    let string = String(self.characters)
 //    var ranges: [Range<AttributedString.Index>] = []
@@ -148,3 +144,54 @@ public extension AttributedString {
 //    return result.compactMap { $0 }
 //  }
 //  }
+
+//
+//extension AttributedString {
+//  
+//  func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
+//    
+//    let string = String(self.characters)
+//    let matches = string.matches(of: pattern)
+//    
+//    var ranges: [AttributedRange] = []
+//    
+//    var searchStartIndex = self.startIndex
+//    
+//    for match in matches {
+//      let matchString = String(match.output)
+//      
+//      while true {
+//        guard let matchStartIndex = self.index(of: matchString, from: searchStartIndex) else {
+//          break // No more matches found
+//        }
+//        
+//        let matchEndIndex = self.index(matchStartIndex, offsetByCharacters: matchString.count)
+//        
+//        ranges.append(matchStartIndex..<matchEndIndex)
+//        
+//        // Move the search start index just past this match
+//        searchStartIndex = self.index(afterCharacter: matchStartIndex)
+//        
+//        // If we've reached the end of the string, break
+//        if searchStartIndex >= self.endIndex {
+//          break
+//        }
+//      }
+//    }
+//    
+//    return ranges
+//  }
+//  
+//  private func index(of substring: String, from startIndex: AttributedString.Index) -> AttributedString.Index? {
+//    var currentIndex = startIndex
+//    while currentIndex < self.endIndex {
+//      let endIndex = self.index(currentIndex, offsetByCharacters: substring.count)
+//      let subAttString = self[currentIndex..<endIndex]
+//      if String(subAttString.characters) == substring {
+//        return currentIndex
+//      }
+//      currentIndex = self.index(afterCharacter: currentIndex)
+//    }
+//    return nil
+//  }
+//}
