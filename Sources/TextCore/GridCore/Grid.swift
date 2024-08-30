@@ -49,11 +49,11 @@ private func cellsThatFitSize(
 ) -> RowsAndColumns {
   
   let width: CGFloat = size.width / cellSize.width
-  print("Let's look at width: \(width)")
+//  print("Let's look at width: \(width)")
   
   let height: CGFloat = size.height / cellSize.height
   
-  print("And height: \(height)")
+//  print("And height: \(height)")
   
   /// IMPORTANT: It's 'unfortunate' that the following feels right
   /// to *say*: "Width and height", and "Rows and column".
@@ -67,7 +67,7 @@ private func cellsThatFitSize(
   /// `height` ≈ `rows`
   ///
   let result = (Int(max(1, height)), Int(max(1, width)))
-  print("And result: \(result)")
+//  print("And result: \(result)")
   
   return result
 }

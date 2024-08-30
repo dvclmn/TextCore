@@ -18,7 +18,7 @@ extension GlyphCell {
     minWidth: CGFloat = 1.5
   ) -> CGSize {
     
-    print("Calculating cell size, for \(fontName.rawValue)")
+//    print("Calculating cell size, for \(fontName.rawValue)")
     
     guard let (nsFont, _) = getFonts(fontName: fontName.rawValue) else { return .zero }
     
@@ -37,7 +37,7 @@ extension GlyphCell {
     minWidth: CGFloat = 1.5
   ) -> CGSize {
     
-    print("Let's calculate the cell size, for font: \(font.fontName)")
+//    print("Let's calculate the cell size, for font: \(font.fontName)")
     
     let ctFont = font as CTFont
     
@@ -54,7 +54,7 @@ extension GlyphCell {
     let finalHeight: CGFloat = fontName.normalised(baseValue: glyphHeight)
     
     let size = CGSize(width: max(minWidth, finalWidth), height: max(minWidth, finalHeight))
-    print("Here is the final cell size: \(size)")
+//    print("Here is the final cell size: \(size)")
     
     return size
   }

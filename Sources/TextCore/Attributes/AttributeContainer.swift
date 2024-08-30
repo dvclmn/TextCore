@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 
 public extension AttributeContainer {
+  
+  static var highlighter: AttributeContainer {
+    return quickContainer(with: .black, background: .green)
+  }
+  
   static var blackOnWhite: AttributeContainer {
     return quickContainer()
   }

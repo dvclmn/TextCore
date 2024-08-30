@@ -18,18 +18,27 @@ struct TextCoreExampleView: View {
   
   @State private var grid = GlyphGrid(cell: .example, dimensions: .example, type: .interface)
   
+  @State var attStr: AttributedString?
+  
   var body: some View {
     
     VStack(alignment: .leading) {
+//      
+//      Text(attStr ?? "nothing")
+//        .onAppear {
+//          let str = "Lorem ipsum dolor <test>first tag</test> sit Donec <test>second tag</test>"
+//          attStr = transform(str, from: "<", to: "t", with: .red)
+//        }
       
       Text(styledText)
+      
       
     }
     .textSelection(.enabled)
     .border(Color.green.opacity(0.1))
-
+    
     .frame(width: 420.snapToCell(cellSize: grid.cell.size), height: 770, alignment: .topLeading)
-        .cellGrid(grid: grid)
+    .cellGrid(grid: grid)
     .background(.black.opacity(0.6))
     
   }
@@ -49,201 +58,64 @@ extension TextCoreExampleView {
     
     let cap = "╳"
     
-    var output = AttributedString("")
-    
-    print("Font name: \(output)")
-    
-//    output[AttributeScopes.AppKitAttributes.FontAttribute.self] = .init(name: grid.cell.fontName.rawValue, size: GlyphGrid.baseFontSize)
-    
-    output.appendString(TextCore.widthCounter(self.width, style: .full).asString)
-    
-    output.appendString("# LineCaps, with spacing")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Cap & text padding",
-        with: "░",
-        toFill: width,
-        alignment: .leading,
-        caps: LineCaps(cap, cap, hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      )
-    )
-    
-    output.appendString(
-      TextCore.padLine(
-        "Has text-pad, no cap-pad",
-        with: "░",
-        toFill: width,
-        alignment: .center,
-        caps: LineCaps(cap, cap, hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      )
-    )
-    
-    output.appendString(
-      TextCore.padLine(
-        "No text-pad. Has cap-pad",
-        with: "░",
-        toFill: width,
-        alignment: .trailing,
-        caps: LineCaps(cap, cap),
-        hasSpaceAroundText: true
-      )
-    )
-    
-    output.addLineBreak()
-    
-    output.appendString("# No LineCaps, with spacing")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: width,
-        alignment: .leading,
-        hasSpaceAroundText: true
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: width,
-        alignment: .center,
-        hasSpaceAroundText: true
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: width,
-        alignment: .trailing,
-        hasSpaceAroundText: true
-      )
-    )
-    
-    
-    output.addLineBreak()
-    
-    output.appendString("# Splits [✓], spaces [✓], caps [ ]")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Split ->@<- Split",
-        with: "░",
-        toFill: width
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "An icon@Some nice text",
-        with: "░",
-        toFill: width
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "@Two splits@Split at begin@ning",
-        with: "░",
-        toFill: width
-      )
-    )
-    
-    output.addLineBreak()
-    output.appendString("# Splits [✓], spaces [ ], caps [ ]")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Split ->@<- Split",
-        with: "░",
-        toFill: width,
-        hasSpaceAroundText: false
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "An icon@Some nice text",
-        with: "░",
-        toFill: width,
-        hasSpaceAroundText: false
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "@Two splits@Split at begin@ning",
-        with: "░",
-        toFill: width,
-        hasSpaceAroundText: false
-      )
-    )
-    
-    
-    output.addLineBreak()
-    output.appendString("# Splits [✓], spaces [✓], caps [✓]")
-    
-    output.appendString(
-      TextCore.padLine(
-        "Split ->@<- Split",
-        with: "░",
-        toFill: width,
-        caps: LineCaps(cap, cap)
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "An iconSome ni@ce text@",
-        with: "░",
-        toFill: width,
-        caps: LineCaps(cap, cap)
-      )
-    )
-    output.appendString(
-      TextCore.padLine(
-        "@Two splits@Split at begin@ning",
-        with: "░",
-        toFill: width,
-        caps: LineCaps(cap, cap)
-      )
-    )
-    
-    
-    
-    
-    //    for characters in output.characters {
-    //
-    ////      print("Match: \(characters)")
-    //
-    ////      print()
-    //
-    //      if characters.isNewline {
-    //        print("New line: \(characters)")
-    //      }
-    //
-    //    }
+    var output = padLineString(width: self.width, cap: cap)
     
     
     let headingPattern: Regex<Substring> = /\#\s.*/
-    let textSpacerPattern: Regex<Substring> = /^/
-    
-    let ranges = output.getAllRanges(matching: headingPattern)
-    
-    print("How many ranges? \(ranges.count)")
-    //      output[range].setAttributes(.blackOnWhite)
-    
-    for range in ranges {
-      print("Ranges: \(output[range])")
-//      output[range].mergeAttributes(.blackOnWhite)
-    }
-    
-    output.setAttributes(fontContainer)
+    let textSpacerPattern: Regex<Substring> = /\^/
     
     grid.cell.updateFont(fontName: .monaco)
+    
+    let headingRanges = output.getAllRanges(matching: headingPattern)
+    let textSpacerRanges = output.getAllRanges(matching: textSpacerPattern)
+    
+    let string = String(output.characters)
+    
+//    print("String: \(string)")
+    
+    let spacerRanges: [Range<String.Index>] = string.ranges(of: textSpacerPattern)
+    
+    print("Find all instances of `^`. How many did we find? \(spacerRanges.count)")
+    
+    for spacerRange in spacerRanges {
+      
+      guard let attrRange = spacerRange.getAttributedRange(in: output) else { break }
+      output[attrRange].mergeAttributes(.highlighter)
+    }
+    
+//    print("How many ranges? \(headingRanges.count)")
+    //      output[range].setAttributes(.blackOnWhite)
+    
+    for headingRange in headingRanges {
+      //      print("Ranges: \(output[range])")
+      output[headingRange].mergeAttributes(.blackOnWhite)
+    }
+    
+    for textSpacerRange in textSpacerRanges {
+      //      print("Ranges: \(output[range])")
+      output[textSpacerRange].mergeAttributes(.highlighter)
+    }
+    
+    output.mergeAttributes(fontContainer)
+    
     
     return output
     
   }
+  
+//  func transform(_ input: String, from: String, to: String, with color: Color) -> AttributedString {
+//    var attInput = AttributedString(input)
+//    let _ = input.components(separatedBy: from).compactMap { sub in
+//      (sub.range(of: to)?.lowerBound).flatMap { endRange in
+//        let s = String(sub[sub.startIndex ..< endRange])
+//        // use `s` for just the middle string
+//        if let theRange = attInput.range(of: (from + s + to)) {
+//          attInput[theRange].foregroundColor = color
+//        }
+//      }
+//    }
+//    return attInput
+//  }
 }
 
 #Preview {

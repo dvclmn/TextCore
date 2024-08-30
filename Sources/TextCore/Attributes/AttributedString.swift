@@ -7,7 +7,10 @@
 
 import Foundation
 
-//public typealias
+
+
+
+
 
 /// The first `Substring` is reserved for the full match. The subsequent three can be used
 /// in whatever way makes sense. E.g. for content surrounded by syntax, such as `*italics*`.
@@ -48,6 +51,8 @@ public extension AttributedString {
   func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
     let string = String(self.characters)
     let matches = string.matches(of: pattern)
+    
+    
     
     var ranges: [Range<AttributedString.Index>] = []
     
