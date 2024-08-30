@@ -34,6 +34,11 @@ struct TextCoreExampleView: View {
       
       
     }
+    .overlay(alignment: .topLeading) {
+      Color.clear
+        .frame(width: grid.cell.size.width * CGFloat(width))
+        .border(Color.purple.opacity(0.3))
+    }
     .textSelection(.enabled)
     .border(Color.green.opacity(0.1))
     
@@ -63,23 +68,21 @@ extension TextCoreExampleView {
     
     let headingPattern: Regex<Substring> = /\#\s.*/
     let textSpacerPattern: Regex<Substring> = /\^/
+    let capSpacerPattern: Regex<Substring> = /_/
     
     grid.cell.updateFont(fontName: .monaco)
     
-    let headingRanges = output.getAllRanges(matching: headingPattern)
-    let textSpacerRanges = output.getAllRanges(matching: textSpacerPattern)
-    
     let string = String(output.characters)
+
+    let headingRanges: [Range<String.Index>] = string.ranges(of: headingPattern)
+    let textSpacerRanges: [Range<String.Index>] = string.ranges(of: textSpacerPattern)
+    let capSpacerRanges: [Range<String.Index>] = string.ranges(of: capSpacerPattern)
     
-//    print("String: \(string)")
+//    print("Find all instances of `^`. How many did we find? \(textSpacerRanges.count)")
     
-    let spacerRanges: [Range<String.Index>] = string.ranges(of: textSpacerPattern)
-    
-    print("Find all instances of `^`. How many did we find? \(spacerRanges.count)")
-    
-    for spacerRange in spacerRanges {
+    for textSpacerRange in textSpacerRanges {
       
-      guard let attrRange = spacerRange.getAttributedRange(in: output) else { break }
+      guard let attrRange = textSpacerRange.getAttributedRange(in: output) else { break }
       output[attrRange].mergeAttributes(.highlighter)
     }
     
@@ -87,13 +90,15 @@ extension TextCoreExampleView {
     //      output[range].setAttributes(.blackOnWhite)
     
     for headingRange in headingRanges {
+      guard let attrRange = headingRange.getAttributedRange(in: output) else { break }
       //      print("Ranges: \(output[range])")
-      output[headingRange].mergeAttributes(.blackOnWhite)
+      output[attrRange].mergeAttributes(.blackOnWhite)
     }
     
-    for textSpacerRange in textSpacerRanges {
-      //      print("Ranges: \(output[range])")
-      output[textSpacerRange].mergeAttributes(.highlighter)
+    for capSpacerRange in capSpacerRanges {
+
+      guard let attrRange = capSpacerRange.getAttributedRange(in: output) else { break }
+      output[attrRange].mergeAttributes(.quickContainer(with: .white, background: .orange))
     }
     
     output.mergeAttributes(fontContainer)

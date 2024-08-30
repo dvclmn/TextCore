@@ -7,6 +7,12 @@
 
 import Foundation
 
+/// This is *very* helpful — don't delete willy-nilly!
+///
+/// This allows me to use `ranges(of:)`, on `String`, which returns `Range<String.Index>`
+/// and then convert that (using the below) to `Range<AttributedString.Index>`
+/// (`https://developer.apple.com/documentation/swift/bidirectionalcollection/ranges(of:)-9qfdo`)
+///
 public extension Range where Bound == String.Index {
   
   func getAttributedRange(in attrString: AttributedString) -> Range<AttributedString.Index>? {
