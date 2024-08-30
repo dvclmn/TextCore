@@ -7,6 +7,8 @@
 
 import Foundation
 
+//public typealias
+
 /// The first `Substring` is reserved for the full match. The subsequent three can be used
 /// in whatever way makes sense. E.g. for content surrounded by syntax, such as `*italics*`.
 ///
@@ -67,7 +69,82 @@ public extension AttributedString {
     return nil
   }
   
+  func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
+    let string = String(self.characters)
+    let matches = string.matches(of: pattern)
+    
+    var ranges: [Range<AttributedString.Index>] = []
+    
+    for match in matches {
+      if let range = self.range(of: match.output) {
+        ranges.append(range)
+      }
+    }
+    
+    return ranges
+  }
+  
+  func getRange(matching pattern: Regex<Substring>) -> AttributedRange? {
+
+    let string = String(self.characters)
+    
+    let matches = string.matches(of: pattern)
+    
+    for match in matches {
+      
+      guard let range = self.range(of: match.output) else { break }
+      
+      return range
+      
+    }
+    return nil
+  }
+  
+ 
+  
+  
+  
+//  func getAllRangesIncremental(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {
+//    let string = String(self.characters)
+//    var ranges: [Range<AttributedString.Index>] = []
+//    var searchRange = string.startIndex..<string.endIndex
+//    
+//    while let match = string.range(of: pattern, range: searchRange) {
+//      if let attrRange = self.range(of: string[match]) {
+//        ranges.append(attrRange)
+//      }
+//      searchRange = match.upperBound..<string.endIndex
+//    }
+//    
+//    return ranges
+//  }
+  
 //  func setStyle(in range: AttributedRange, attrString: inout Self) {
 //    
 //  }
 }
+
+
+//
+//extension AttributedString {
+//  func getAllRangesParallel(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {
+//    let string = String(self.characters)
+//    let chunkSize = max(1000, string.count / ProcessInfo.processInfo.activeProcessorCount)
+//    
+//    let ranges = string.chunks(ofCount: chunkSize).parallelMap { chunk in
+//      string.ranges(of: pattern, range: chunk.startIndex..<chunk.endIndex)
+//    }.flatMap { $0 }
+//    
+//    return ranges.compactMap { self.range(of: string[$0]) }
+//  }
+//}
+//
+//extension Sequence {
+//  func parallelMap<T>(_ transform: @escaping (Element) -> T) -> [T] {
+//    let result = Array<T?>(repeating: nil, count: self.underestimatedCount)
+//    DispatchQueue.concurrentPerform(iterations: result.count) { idx in
+//      result[idx] = transform(self[self.index(self.startIndex, offsetBy: idx)])
+//    }
+//    return result.compactMap { $0 }
+//  }
+//  }

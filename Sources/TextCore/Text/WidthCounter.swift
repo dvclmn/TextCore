@@ -33,10 +33,7 @@ public extension TextCore {
         let fullOutput = self.generateFullCounter(width)
         
         result.appendString(fullOutput.tens)
-        result.addLineBreak()
-        
         result.appendString(fullOutput.ones)
-        result.addLineBreak()
         
       case .compact:
         

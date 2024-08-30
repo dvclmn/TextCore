@@ -7,7 +7,7 @@
 
 import SwiftUI
 import BaseHelpers
-
+import Foundation
 
 
 
@@ -24,116 +24,161 @@ struct TextCoreExampleView: View {
       
       Text(TextCore.widthCounter(self.width, style: .full))
       
-      let text: String = """
-      LineCaps, with spacing:
-      \(TextCore.padLine(
-        "Cap & text padding",
-          with: "░",
-          toFill: 42,
-          alignment: .leading,
-          caps: LineCaps("|", "|", hasExtraSpaces: true),
-          hasSpaceAroundText: true
-        ))
-      \(TextCore.padLine(
-        "Has text-pad, no cap-pad",
-        with: "░",
-        toFill: 42,
-        alignment: .center,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      ))
-      \(TextCore.padLine(
-        "No text-pad. Has cap-pad",
-        with: "░",
-        toFill: 42,
-        alignment: .trailing,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
-        hasSpaceAroundText: true
-      ))
+      Text(styledText)
       
-      
-      ---
-      
-      No LineCaps, with spacing:
-      \(TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: 42,
-        alignment: .leading,
-        hasSpaceAroundText: true
-      ))
-      \(TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: 42,
-        alignment: .center,
-        hasSpaceAroundText: true
-      ))
-      \(TextCore.padLine(
-        "Text padding center",
-        with: "░",
-        toFill: 42,
-        alignment: .trailing,
-        hasSpaceAroundText: true
-      ))
-      
-      ---
-      
-      Splits and caps:      
-      \(TextCore.padLine(
-        "Split ->@<- Split",
-        with: "░",
-        toFill: 42,
-      caps: LineCaps("|", "|", hasExtraSpaces: true)
-      ))
-      \(TextCore.padLine(
-        "An icon@Some nice text",
-        with: "░",
-        toFill: 42,
-      caps: LineCaps("|", "|", hasExtraSpaces: true)
-      ))
-      \(TextCore.padLine(
-        "@Two splits@Split at beggining",
-        with: "░",
-        toFill: 42,
-      caps: LineCaps("|", "|", hasExtraSpaces: true)
-      ))
-      
-      ---
-      
-      Splits and no caps:
-      \(TextCore.padLine(
-        "Split ->@<- Split",
-        with: "░",
-        toFill: 42
-      ))
-      \(TextCore.padLine(
-        "An icon@Some nice text",
-        with: "░",
-        toFill: 42
-      ))
-      \(TextCore.padLine(
-        "@Two splits@Split at beggining",
-        with: "░",
-        toFill: 42
-      ))
-      
-      """
-      
-      Text(text)
-      //      .border(Color.green.opacity(0.3))
     }
     .textSelection(.enabled)
     .border(Color.green.opacity(0.1))
     .monospaced()
     .font(.system(size: 16))
     .padding(40)
-    .frame(width: 600, height: 700)
+    .frame(width: 600, height: 770)
     //    .cellGrid(grid: GlyphGrid(cell: .example, dimensions: .example, type: .interface), autoSize: true)
     .background(.black.opacity(0.6))
     
   }
 }
+
+extension TextCoreExampleView {
+  
+
+  var styledText: AttributedString {
+    
+    var output = AttributedString()
+    
+    output.appendString("# LineCaps, with spacing")
+    
+    output.appendString(
+      TextCore.padLine(
+        "Cap & text padding",
+        with: "░",
+        toFill: 42,
+        alignment: .leading,
+        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        hasSpaceAroundText: true
+      )
+    )
+    
+    output.appendString(
+      TextCore.padLine(
+        "Has text-pad, no cap-pad",
+        with: "░",
+        toFill: 42,
+        alignment: .center,
+        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        hasSpaceAroundText: true
+      )
+    )
+    
+    output.appendString(
+      TextCore.padLine(
+        "No text-pad. Has cap-pad",
+        with: "░",
+        toFill: 42,
+        alignment: .trailing,
+        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        hasSpaceAroundText: true
+      )
+    )
+    
+    output.addLineBreak()
+    
+    output.appendString("# No LineCaps, with spacing")
+    
+    output.appendString(
+      TextCore.padLine(
+        "Text padding center",
+        with: "░",
+        toFill: 42,
+        alignment: .leading,
+        hasSpaceAroundText: true
+      )
+    )
+    output.appendString(
+      TextCore.padLine(
+        "Text padding center",
+        with: "░",
+        toFill: 42,
+        alignment: .center,
+        hasSpaceAroundText: true
+      )
+    )
+    output.appendString(
+      TextCore.padLine(
+        "Text padding center",
+        with: "░",
+        toFill: 42,
+        alignment: .trailing,
+        hasSpaceAroundText: true
+      )
+    )
+    
+    
+    output.addLineBreak()
+    
+    output.appendString("# No LineCaps, with spacing:")
+    
+    output.appendString(
+      TextCore.padLine(
+        "Split ->@<- Split",
+        with: "░",
+        toFill: 42
+      )
+    )
+    output.appendString(
+      TextCore.padLine(
+        "An icon@Some nice text",
+        with: "░",
+        toFill: 42
+      )
+    )
+    output.appendString(
+      TextCore.padLine(
+        "@Two splits@Split at begin@ning",
+        with: "░",
+        toFill: 42
+      )
+    )
+    
+   
+    
+    
+//    for characters in output.characters {
+//      
+////      print("Match: \(characters)")
+//      
+////      print()
+//      
+//      if characters.isNewline {
+//        print("New line: \(characters)")
+//      }
+//      
+//    }
+    
+    
+    let pattern: Regex<Substring> = /\#\s.*/
+    
+    let ranges = output.getAllRanges(matching: pattern)
+      
+    print("How many ranges? \(ranges.count)")
+//      output[range].setAttributes(.blackOnWhite)
+      
+    for range in ranges {
+      print("Ranges: \(output[range])")
+      output[range].setAttributes(.blackOnWhite)
+    }
+      
+    
+    
+    
+    
+    return output
+    
+  }
+  
+  
+}
+
 #Preview {
   TextCoreExampleView()
 }
@@ -195,8 +240,8 @@ public struct TextCore {
     /// Result: `^░░░░░^Two splitsx░░░░░^Split at beggining`
     /// Or, result: `Two splits^░░░░░░░░░░^Split at beggining`
     let splitTextChunk: [String.SubSequence] = text.split(separator: sliceCharacter, omittingEmptySubsequences: false)
-    print("Component count: \(splitTextChunk.count)")
-    print("Components: \(splitTextChunk)\n\n")
+//    print("Component count: \(splitTextChunk.count)")
+//    print("Components: \(splitTextChunk)\n\n")
     
     /// This is the number of characters in the text content only. This will be added
     /// to the total count, including caps/padding, to compare against the
@@ -254,7 +299,7 @@ public struct TextCore {
     
     """
     
-    print(metrics)
+//    print(metrics)
     
     func distributeDynamicPadding(_ padding: Int) -> (left: Int, right: Int) {
       
@@ -290,7 +335,7 @@ public struct TextCore {
       
       /// There *was* a split character provided.
       ///
-      /// `components.count - 1` gives us the total number of *gaps* between
+      /// `components.count - 1` gives us the total number of gaps between
       /// components — always one less than the number of components.
       ///
       
@@ -336,7 +381,7 @@ public struct TextCore {
         
         var leadingSpace = index == 0 ? textExtraSpace.0 : "x"
         var trailingSpace = textExtraSpace.1
-
+        
         result += textContent
         
         /// The below (`if index < components.count - 1`) makes sure the current
@@ -376,7 +421,7 @@ public struct TextCore {
           + trailingSpace
           
         } else {
-//          result += "Butts"
+          //          result += "Butts"
         }
         
       }
