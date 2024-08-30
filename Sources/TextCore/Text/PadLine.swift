@@ -76,7 +76,7 @@ public struct TextCore {
     
     
     
-    let capExtraSpaceSingle: String = (caps?.hasExtraSpaces == true) ? "%" : ""
+    let capExtraSpaceSingle: String = (caps?.hasExtraSpaces == true) ? "_" : ""
     let capExtraSpaceWidth: Int = 2
     
     let textExtraSpaceSingle: String = hasSpaceAroundText ? "^" : ""

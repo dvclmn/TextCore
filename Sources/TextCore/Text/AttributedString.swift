@@ -44,6 +44,22 @@ public extension AttributedString {
   /// return output
   /// ```
   ///
+  
+  func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
+    let string = String(self.characters)
+    let matches = string.matches(of: pattern)
+    
+    var ranges: [Range<AttributedString.Index>] = []
+    
+    for match in matches {
+      if let range = self.range(of: match.output) {
+        ranges.append(range)
+      }
+    }
+    
+    return ranges
+  }
+  
   func getRange(for pattern: ThreePartRegex) -> ThreePartRange? {
     
     //    var range: Range<AttributedString.Index>
@@ -69,21 +85,6 @@ public extension AttributedString {
     return nil
   }
   
-  func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
-    let string = String(self.characters)
-    let matches = string.matches(of: pattern)
-    
-    var ranges: [Range<AttributedString.Index>] = []
-    
-    for match in matches {
-      if let range = self.range(of: match.output) {
-        ranges.append(range)
-      }
-    }
-    
-    return ranges
-  }
-  
   func getRange(matching pattern: Regex<Substring>) -> AttributedRange? {
 
     let string = String(self.characters)
@@ -98,6 +99,27 @@ public extension AttributedString {
       
     }
     return nil
+  }
+  
+  func debugRanges(matching pattern: Regex<Substring>) {
+    let string = String(self.characters)
+    let matches = string.matches(of: pattern)
+    
+    print("Total matches found: \(matches.count)")
+    
+    for (index, match) in matches.enumerated() {
+      let matchString = String(match.output)
+      print("Match \(index + 1): '\(matchString)'")
+      
+      if let range = self.range(of: matchString) {
+        print("  Found at range: \(range)")
+        print("  Content at range: '\(self[range])'")
+      } else {
+        print("  Range not found in AttributedString")
+      }
+      
+      print("---")
+    }
   }
 
 //  func getAllRangesIncremental(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {

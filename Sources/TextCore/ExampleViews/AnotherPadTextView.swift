@@ -11,27 +11,25 @@ import SwiftUI
 
 struct TextCoreExampleView: View {
   
-  let width: Int = 42
+  let width = 41
   
   let capSpace: String = "%"
   let textSpace: String = "^"
   
+  @State private var grid = GlyphGrid(cell: .example, dimensions: .example, type: .interface)
+  
   var body: some View {
     
-    VStack {
-      
-      Text(TextCore.widthCounter(self.width, style: .full))
+    VStack(alignment: .leading) {
       
       Text(styledText)
       
     }
     .textSelection(.enabled)
     .border(Color.green.opacity(0.1))
-    .monospaced()
-    .font(.system(size: 16))
-    .padding(40)
-    .frame(width: 600, height: 770)
-    //    .cellGrid(grid: GlyphGrid(cell: .example, dimensions: .example, type: .interface), autoSize: true)
+
+    .frame(width: 420.snapToCell(cellSize: grid.cell.size), height: 770, alignment: .topLeading)
+        .cellGrid(grid: grid)
     .background(.black.opacity(0.6))
     
   }
@@ -39,10 +37,25 @@ struct TextCoreExampleView: View {
 
 extension TextCoreExampleView {
   
+  var fontContainer: AttributeContainer {
+    var container = AttributeContainer()
+    container.font = .custom(grid.cell.fontName.rawValue, size: GlyphGrid.baseFontSize)
+    
+    return container
+  }
+  
   
   var styledText: AttributedString {
     
-    var output = AttributedString()
+    let cap = "╳"
+    
+    var output = AttributedString("")
+    
+    print("Font name: \(output)")
+    
+//    output[AttributeScopes.AppKitAttributes.FontAttribute.self] = .init(name: grid.cell.fontName.rawValue, size: GlyphGrid.baseFontSize)
+    
+    output.appendString(TextCore.widthCounter(self.width, style: .full).asString)
     
     output.appendString("# LineCaps, with spacing")
     
@@ -50,9 +63,9 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "Cap & text padding",
         with: "░",
-        toFill: 42,
+        toFill: width,
         alignment: .leading,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        caps: LineCaps(cap, cap, hasExtraSpaces: true),
         hasSpaceAroundText: true
       )
     )
@@ -61,9 +74,9 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "Has text-pad, no cap-pad",
         with: "░",
-        toFill: 42,
+        toFill: width,
         alignment: .center,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        caps: LineCaps(cap, cap, hasExtraSpaces: true),
         hasSpaceAroundText: true
       )
     )
@@ -72,9 +85,9 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "No text-pad. Has cap-pad",
         with: "░",
-        toFill: 42,
+        toFill: width,
         alignment: .trailing,
-        caps: LineCaps("|", "|", hasExtraSpaces: true),
+        caps: LineCaps(cap, cap),
         hasSpaceAroundText: true
       )
     )
@@ -87,7 +100,7 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "Text padding center",
         with: "░",
-        toFill: 42,
+        toFill: width,
         alignment: .leading,
         hasSpaceAroundText: true
       )
@@ -96,7 +109,7 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "Text padding center",
         with: "░",
-        toFill: 42,
+        toFill: width,
         alignment: .center,
         hasSpaceAroundText: true
       )
@@ -105,7 +118,7 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "Text padding center",
         with: "░",
-        toFill: 42,
+        toFill: width,
         alignment: .trailing,
         hasSpaceAroundText: true
       )
@@ -114,27 +127,27 @@ extension TextCoreExampleView {
     
     output.addLineBreak()
     
-    output.appendString("# Splits [✓], spaces [ ], caps [ ]")
+    output.appendString("# Splits [✓], spaces [✓], caps [ ]")
     
     output.appendString(
       TextCore.padLine(
         "Split ->@<- Split",
         with: "░",
-        toFill: 42
+        toFill: width
       )
     )
     output.appendString(
       TextCore.padLine(
         "An icon@Some nice text",
         with: "░",
-        toFill: 42
+        toFill: width
       )
     )
     output.appendString(
       TextCore.padLine(
         "@Two splits@Split at begin@ning",
         with: "░",
-        toFill: 42
+        toFill: width
       )
     )
     
@@ -145,7 +158,7 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "Split ->@<- Split",
         with: "░",
-        toFill: 42,
+        toFill: width,
         hasSpaceAroundText: false
       )
     )
@@ -153,7 +166,7 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "An icon@Some nice text",
         with: "░",
-        toFill: 42,
+        toFill: width,
         hasSpaceAroundText: false
       )
     )
@@ -161,8 +174,37 @@ extension TextCoreExampleView {
       TextCore.padLine(
         "@Two splits@Split at begin@ning",
         with: "░",
-        toFill: 42,
+        toFill: width,
         hasSpaceAroundText: false
+      )
+    )
+    
+    
+    output.addLineBreak()
+    output.appendString("# Splits [✓], spaces [✓], caps [✓]")
+    
+    output.appendString(
+      TextCore.padLine(
+        "Split ->@<- Split",
+        with: "░",
+        toFill: width,
+        caps: LineCaps(cap, cap)
+      )
+    )
+    output.appendString(
+      TextCore.padLine(
+        "An iconSome ni@ce text@",
+        with: "░",
+        toFill: width,
+        caps: LineCaps(cap, cap)
+      )
+    )
+    output.appendString(
+      TextCore.padLine(
+        "@Two splits@Split at begin@ning",
+        with: "░",
+        toFill: width,
+        caps: LineCaps(cap, cap)
       )
     )
     
@@ -182,23 +224,26 @@ extension TextCoreExampleView {
     //    }
     
     
-    let pattern: Regex<Substring> = /\#\s.*/
+    let headingPattern: Regex<Substring> = /\#\s.*/
+    let textSpacerPattern: Regex<Substring> = /^/
     
-    let ranges = output.getAllRanges(matching: pattern)
+    let ranges = output.getAllRanges(matching: headingPattern)
     
     print("How many ranges? \(ranges.count)")
     //      output[range].setAttributes(.blackOnWhite)
     
     for range in ranges {
       print("Ranges: \(output[range])")
-      output[range].setAttributes(.blackOnWhite)
+//      output[range].mergeAttributes(.blackOnWhite)
     }
+    
+    output.setAttributes(fontContainer)
+    
+    grid.cell.updateFont(fontName: .monaco)
     
     return output
     
   }
-  
-  
 }
 
 #Preview {
