@@ -34,13 +34,10 @@ public extension AttributedString {
   //  }
   
   
-  var quickHighlight: AttributedString {
-    var highlighted = self
+  mutating func quickHighlight() {
     let highlightContainer: AttributeContainer = .highlighter
-    highlighted.setAttributes(highlightContainer)
-    return highlighted
+    self.setAttributes(highlightContainer)
   }
-  
   
   
   func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {

@@ -13,9 +13,9 @@ extension TextCoreExampleView {
     
     var output = AttributedString()
     
-    output.appendString(TextCore.widthCounter(self.width, style: .full).string)
+    output.appendString(TextCore.widthCounter(self.width, style: .full).string, addsLineBreak: false)
     
-    output.appendString("# LineCaps, with spacing")
+    output.appendString("# LineCaps, with spacing", addsLineBreak: false)
     
     output.appendString(
       TextCore.padLine(
@@ -25,7 +25,7 @@ extension TextCoreExampleView {
         alignment: .leading,
         caps: LineCaps(cap, cap, hasExtraSpaces: true),
         hasSpaceAroundText: true
-      )
+      ), addsLineBreak: false
     )
     
     output.appendString(
@@ -36,7 +36,7 @@ extension TextCoreExampleView {
         alignment: .center,
         caps: LineCaps(cap, cap, hasExtraSpaces: true),
         hasSpaceAroundText: true
-      )
+      ), addsLineBreak: false
     )
     
     output.appendString(
@@ -47,12 +47,12 @@ extension TextCoreExampleView {
         alignment: .trailing,
         caps: LineCaps(cap, cap),
         hasSpaceAroundText: true
-      )
+      ), addsLineBreak: false
     )
     
     output.addLineBreak()
     
-    output.appendString("# No LineCaps, with spacing")
+    output.appendString("# No LineCaps, with spacing", addsLineBreak: false)
     
     output.appendString(
       TextCore.padLine(
@@ -61,7 +61,7 @@ extension TextCoreExampleView {
         toFill: width,
         alignment: .leading,
         hasSpaceAroundText: true
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
@@ -70,7 +70,7 @@ extension TextCoreExampleView {
         toFill: width,
         alignment: .center,
         hasSpaceAroundText: true
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
@@ -79,38 +79,38 @@ extension TextCoreExampleView {
         toFill: width,
         alignment: .trailing,
         hasSpaceAroundText: true
-      )
+      ), addsLineBreak: false
     )
     
     
     output.addLineBreak()
     
-    output.appendString("# Splits [✓], spaces [✓], caps [ ]")
+    output.appendString("# Splits [✓], spaces [✓], caps [ ]", addsLineBreak: false)
     
     output.appendString(
       TextCore.padLine(
         "Split ->@<- Split",
         with: "░",
         toFill: width
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
         "An icon@Some nice text",
         with: "░",
         toFill: width
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
         "@Two splits@Split at begin@ning",
         with: "░",
         toFill: width
-      )
+      ), addsLineBreak: false
     )
     
     output.addLineBreak()
-    output.appendString("# Splits [✓], spaces [ ], caps [ ]")
+    output.appendString("# Splits [✓], spaces [ ], caps [ ]", addsLineBreak: false)
     
     output.appendString(
       TextCore.padLine(
@@ -118,7 +118,7 @@ extension TextCoreExampleView {
         with: "░",
         toFill: width,
         hasSpaceAroundText: false
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
@@ -126,7 +126,7 @@ extension TextCoreExampleView {
         with: "░",
         toFill: width,
         hasSpaceAroundText: false
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
@@ -134,12 +134,12 @@ extension TextCoreExampleView {
         with: "░",
         toFill: width,
         hasSpaceAroundText: false
-      )
+      ), addsLineBreak: false
     )
     
     
     output.addLineBreak()
-    output.appendString("# Splits [✓], spaces [✓], caps [✓]")
+    output.appendString("# Splits [✓], spaces [✓], caps [✓]", addsLineBreak: false)
     
     output.appendString(
       TextCore.padLine(
@@ -147,7 +147,7 @@ extension TextCoreExampleView {
         with: "░",
         toFill: width,
         caps: LineCaps(cap, cap)
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
@@ -155,7 +155,7 @@ extension TextCoreExampleView {
         with: "░",
         toFill: width,
         caps: LineCaps(cap, cap)
-      )
+      ), addsLineBreak: false
     )
     output.appendString(
       TextCore.padLine(
@@ -163,7 +163,7 @@ extension TextCoreExampleView {
         with: "░",
         toFill: width,
         caps: LineCaps(cap, cap)
-      )
+      ), addsLineBreak: false
     )
     
     return output

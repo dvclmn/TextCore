@@ -62,22 +62,22 @@ extension PadTextExampleView {
     //    output.appendString(bottomLine)
     
     if self.isSelectFontActive {
-      output.appendString(horizontalLine)
+      output.appendString(horizontalLine, addsLineBreak: false)
     } else {
       output.addLineBreak()
-      output.appendString(horizontalLine)
+      output.appendString(horizontalLine, addsLineBreak: false)
       
     }
     output.addLineBreak()
-    output.appendString(content)
+    output.appendString(content, addsLineBreak: false)
     output.addLineBreak()
     
     if self.isSelectFontActive {
-      output.appendString(bottomLine)
-      output.appendString(shadow)
-      output.appendString(bottomLineAlt)
+      output.appendString(bottomLine, addsLineBreak: false)
+      output.appendString(shadow, addsLineBreak: false)
+      output.appendString(bottomLineAlt, addsLineBreak: false)
     } else {
-      output.appendString(bottomLine)
+      output.appendString(bottomLine, addsLineBreak: false)
       
     }
     

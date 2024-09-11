@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 
 public extension TextCore {
@@ -32,14 +33,14 @@ public extension TextCore {
 
         let fullOutput = self.generateFullCounter(width)
         
-        result.appendString(fullOutput.tens)
-        result.appendString(fullOutput.ones)
+        result.appendString(fullOutput.tens, addsLineBreak: true)
+        result.appendString(fullOutput.ones, addsLineBreak: true)
         
       case .compact:
         
         let compactOutput = self.generateCompactCounter(width)
         
-        result.appendString(compactOutput)
+        result.appendString(compactOutput, addsLineBreak: false)
         result.addLineBreak()
         
         result.appendString(
@@ -48,7 +49,7 @@ public extension TextCore {
             alternating: "|",
             every: 5,
             totalCount: width
-          )
+          ), addsLineBreak: false
         )
         result.addLineBreak()
         
@@ -142,8 +143,33 @@ public extension TextCore {
       onesLine += String(integer % 10)
     }
     
+    guard tensLine.count == width,
+          onesLine.count == width
+    else { fatalError("Incorrect width claculation somewhere.")}
+    
     return (tensLine, onesLine)
     
   } // END full counter
 
 }
+
+
+
+struct WidthCounterView: View {
+  
+  var body: some View {
+    
+    Text(TextCore.widthCounter(38, style: .full))
+      .textSelection(.enabled)
+    
+      .monospaced()
+    //    .padding(40)
+      .frame(width: 400, height: 600)
+      .background(.black.opacity(0.6))
+  }
+}
+#Preview {
+  WidthCounterView()
+}
+
+
