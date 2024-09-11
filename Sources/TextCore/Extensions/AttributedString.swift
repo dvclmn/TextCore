@@ -1,33 +1,11 @@
 //
 //  AttributedString.swift
-//  SwiftBox
+//  TextCore
 //
-//  Created by Dave Coleman on 27/8/2024.
+//  Created by Dave Coleman on 31/8/2024.
 //
 
-import Foundation
-
-
-
-
-
-
-/// The first `Substring` is reserved for the full match. The subsequent three can be used
-/// in whatever way makes sense. E.g. for content surrounded by syntax, such as `*italics*`.
-///
-/// In that example, substrings 2, 3 and 4 would hold the leading asterisk, text content,
-/// and trailing asterisk respectively.
-///
-public typealias ThreePartRegex = Regex<(Substring, Substring, Substring, Substring)>
-
-/// The attributed range as described below, pairs with the `ThreePartRegex` above,
-/// and provides a mechism through which to identify where in the
-/// `AttributedString` the resulting matches are located.
-///
-public typealias AttributedRange = Range<AttributedString.Index>
-
-public typealias ThreePartRange = (AttributedRange, AttributedRange, AttributedRange)
-
+import SwiftUI
 
 public extension AttributedString {
   
@@ -47,6 +25,23 @@ public extension AttributedString {
   /// return output
   /// ```
   ///
+  
+  //  func quickHighlight(_ string: inout AttributedString) {
+  //    let highlightContainer: AttributeContainer = .highlighter
+  //
+  //    string.setAttributes(highlightContainer)
+  //
+  //  }
+  
+  
+  var quickHighlight: AttributedString {
+    var highlighted = self
+    let highlightContainer: AttributeContainer = .highlighter
+    highlighted.setAttributes(highlightContainer)
+    return highlighted
+  }
+  
+  
   
   func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
     let string = String(self.characters)
@@ -91,7 +86,7 @@ public extension AttributedString {
   }
   
   func getRange(matching pattern: Regex<Substring>) -> AttributedRange? {
-
+    
     let string = String(self.characters)
     
     let matches = string.matches(of: pattern)
@@ -126,25 +121,25 @@ public extension AttributedString {
       print("---")
     }
   }
-
-//  func getAllRangesIncremental(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {
-//    let string = String(self.characters)
-//    var ranges: [Range<AttributedString.Index>] = []
-//    var searchRange = string.startIndex..<string.endIndex
-//    
-//    while let match = string.range(of: pattern, range: searchRange) {
-//      if let attrRange = self.range(of: string[match]) {
-//        ranges.append(attrRange)
-//      }
-//      searchRange = match.upperBound..<string.endIndex
-//    }
-//    
-//    return ranges
-//  }
   
-//  func setStyle(in range: AttributedRange, attrString: inout Self) {
-//    
-//  }
+  //  func getAllRangesIncremental(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {
+  //    let string = String(self.characters)
+  //    var ranges: [Range<AttributedString.Index>] = []
+  //    var searchRange = string.startIndex..<string.endIndex
+  //
+  //    while let match = string.range(of: pattern, range: searchRange) {
+  //      if let attrRange = self.range(of: string[match]) {
+  //        ranges.append(attrRange)
+  //      }
+  //      searchRange = match.upperBound..<string.endIndex
+  //    }
+  //
+  //    return ranges
+  //  }
+  
+  //  func setStyle(in range: AttributedRange, attrString: inout Self) {
+  //
+  //  }
 }
 
 
@@ -153,11 +148,11 @@ public extension AttributedString {
 //  func getAllRangesParallel(matching pattern: Regex<Substring>) -> [Range<AttributedString.Index>] {
 //    let string = String(self.characters)
 //    let chunkSize = max(1000, string.count / ProcessInfo.processInfo.activeProcessorCount)
-//    
+//
 //    let ranges = string.chunks(ofCount: chunkSize).parallelMap { chunk in
 //      string.ranges(of: pattern, range: chunk.startIndex..<chunk.endIndex)
 //    }.flatMap { $0 }
-//    
+//
 //    return ranges.compactMap { self.range(of: string[$0]) }
 //  }
 //}
@@ -174,41 +169,41 @@ public extension AttributedString {
 
 //
 //extension AttributedString {
-//  
+//
 //  func getAllRanges(matching pattern: Regex<Substring>) -> [AttributedRange] {
-//    
+//
 //    let string = String(self.characters)
 //    let matches = string.matches(of: pattern)
-//    
+//
 //    var ranges: [AttributedRange] = []
-//    
+//
 //    var searchStartIndex = self.startIndex
-//    
+//
 //    for match in matches {
 //      let matchString = String(match.output)
-//      
+//
 //      while true {
 //        guard let matchStartIndex = self.index(of: matchString, from: searchStartIndex) else {
 //          break // No more matches found
 //        }
-//        
+//
 //        let matchEndIndex = self.index(matchStartIndex, offsetByCharacters: matchString.count)
-//        
+//
 //        ranges.append(matchStartIndex..<matchEndIndex)
-//        
+//
 //        // Move the search start index just past this match
 //        searchStartIndex = self.index(afterCharacter: matchStartIndex)
-//        
+//
 //        // If we've reached the end of the string, break
 //        if searchStartIndex >= self.endIndex {
 //          break
 //        }
 //      }
 //    }
-//    
+//
 //    return ranges
 //  }
-//  
+//
 //  private func index(of substring: String, from startIndex: AttributedString.Index) -> AttributedString.Index? {
 //    var currentIndex = startIndex
 //    while currentIndex < self.endIndex {

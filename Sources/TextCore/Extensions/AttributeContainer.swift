@@ -10,6 +10,14 @@ import SwiftUI
 
 public extension AttributeContainer {
   
+  static var underlineDebug: AttributeContainer {
+    var container = AttributeContainer()
+    container.strikethroughStyle = .single
+    container.strikethroughColor = .red
+    
+    return container
+  }
+  
   static var highlighter: AttributeContainer {
     return quickContainer(with: .black, background: .green)
   }

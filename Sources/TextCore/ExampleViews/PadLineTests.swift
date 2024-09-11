@@ -13,7 +13,7 @@ extension TextCoreExampleView {
     
     var output = AttributedString()
     
-    output.appendString(TextCore.widthCounter(self.width, style: .full).asString)
+    output.appendString(TextCore.widthCounter(self.width, style: .full).string)
     
     output.appendString("# LineCaps, with spacing")
     

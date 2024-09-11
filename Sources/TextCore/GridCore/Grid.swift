@@ -17,6 +17,14 @@ public extension CGSize {
   }
 }
 
+
+
+public enum DimensionForCell {
+  case width, height
+}
+
+
+
 public extension CGFloat {
   func cellsThatFit(_ cellSize: CGSize, in dimension: DimensionForCell = .width) -> Int {
 

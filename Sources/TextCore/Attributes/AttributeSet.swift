@@ -9,7 +9,33 @@
 import AppKit
 import Foundation
 
+/// Is this a bit like `AttributeContainer`, for `NSAttributedString`?
+///
+
 public typealias Attributes = [NSAttributedString.Key: Any]
+
+public extension Attributes {
+  
+  static let white: Attributes = [
+    .foregroundColor: NSColor.textColor.withAlphaComponent(0.9)
+  ]
+  
+  static let highlighter: Attributes = [
+    .foregroundColor: NSColor.yellow,
+    .backgroundColor: NSColor.orange.withAlphaComponent(0.6)
+  ]
+  
+  static let codeBlock: Attributes = [
+    .foregroundColor: NSColor.white,
+    .backgroundColor: NSColor.darkGray,
+    .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+  ]
+  
+}
+
+extension Attributes: Sendable {
+  
+}
 
 public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
   nonisolated(unsafe) public var attributes: Attributes
@@ -28,45 +54,23 @@ public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
   }
 }
 
-extension AttributeSet: Sequence {
-  public func makeIterator() -> Dictionary<NSAttributedString.Key, Any>.Iterator {
-    return attributes.makeIterator()
-  }
-}
-
-
-public extension NSMutableAttributedString {
+extension AttributeSet {
   
-  @MainActor func setAttributesCustom(
-    _ attributeSet: AttributeSet,
-    range: NSRange,
-    with typingAttributes: Attributes? = nil
-  ) {
-    
-    if let typingAttributes = typingAttributes {
-      
-      //      setAttributes(attributeSet.attributes.merging(typingAttributes, uniquingKeysWith: { key, value in
-      //
-      //      }), range: range)
-      setAttributes(attributeSet.attributes, range: range)
-      addAttributes(typingAttributes, range: range)
-    } else {
-      setAttributes(attributeSet.attributes, range: range)
-    }
-  }
-}
-
-public extension AttributeSet {
-  
-  static let highlighter: AttributeSet = [
+  public static let highlighter: AttributeSet = [
     .foregroundColor: NSColor.yellow,
     .backgroundColor: NSColor.orange.withAlphaComponent(0.6)
   ]
   
-  static let codeBlock: AttributeSet = [
+  public static let codeBlock: AttributeSet = [
     .foregroundColor: NSColor.white,
     .backgroundColor: NSColor.darkGray,
     .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
   ]
+}
+
+extension AttributeSet: Sequence {
   
+  public func makeIterator() -> Dictionary<NSAttributedString.Key, Any>.Iterator {
+    return attributes.makeIterator()
+  }
 }

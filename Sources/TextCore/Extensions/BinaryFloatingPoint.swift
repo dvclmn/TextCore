@@ -1,27 +1,11 @@
 //
-//  TextCore.swift
-//  SwiftBox
+//  BinaryFloatingPoint.swift
+//  TextCore
 //
-//  Created by Dave Coleman on 27/8/2024.
+//  Created by Dave Coleman on 31/8/2024.
 //
 
-/// Common operations
-///
-/// 1. Find just enough whitespace to fill out a row of character to x-length
-///
-
-import SwiftUI
-import BaseHelpers
-
-public extension CGSize {
-  var widthOrHeightIsZero: Bool {
-    return self.width.isZero || self.height.isZero
-  }
-}
-
-public enum DimensionForCell {
-  case width, height
-}
+import Foundation
 
 public extension BinaryFloatingPoint {
   

@@ -2,6 +2,8 @@
 
 import PackageDescription
 
+let localPackagesRoot = "/Users/dvclmn/Apps/_ Swift Packages"
+
 let package = Package(
   name: "TextCore",
   platforms: [
@@ -15,8 +17,8 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(name: "Helpers", path: "../SwiftCollection/Helpers"),
-    .package(name: "Styles", path: "../Styles"),
+    .package(name: "Helpers", path: "\(localPackagesRoot)/SwiftCollection/Helpers"),
+    .package(name: "Styles", path: "\(localPackagesRoot)/Styles"),
   ],
   targets: [
     .target(

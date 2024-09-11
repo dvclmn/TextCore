@@ -126,12 +126,13 @@ public struct TextCore {
     
     
     let splitCount: Int = contentIsSplit ? splitTextChunk.count - 1 : 0
-//    let splitSpaces: Int = max(0, splitCount * 2)
+    let splitSpaces: Int = max(0, splitCount * 2)
 
     
     if contentIsSplit {
       
       textExtraSpace = (textExtraSpaceCharacter, textExtraSpaceCharacter)
+      
       
     } else {
       
@@ -148,7 +149,7 @@ public struct TextCore {
       
     }
 
-    textSpaceCount = (textExtraSpace.leading.count, textExtraSpace.trailing.count)
+    textSpaceCount = (textExtraSpace.leading.count + splitSpaces, textExtraSpace.trailing.count + splitSpaces)
     
     
     let finalContentWidth = contentWidth
