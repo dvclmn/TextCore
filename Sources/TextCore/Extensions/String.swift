@@ -6,7 +6,15 @@
 //
 
 
+
+public extension Character {
+  var string: String {
+    String(self)
+  }
+}
+
 public extension String {
+  
   static func repeating(
     _ mainChar: Character,
     alternating altChar: Character,
@@ -27,36 +35,33 @@ public extension String {
   
   
   
-  func reflowText(width: Int, maxLines: Int?) -> [String] {
-    
-    return trimLines(width: width, maxLines: maxLines)
-  }
-  
-  func reflowText(width: Int, maxLines: Int?) -> String {
-    
-    let lines = trimLines(width: width, maxLines: maxLines)
-    
-    let joinedResult = lines.map { line in
-      line
-    }.joined(separator: "\n")
-    
-    return joinedResult
-  }
-  
-  private func trimLines(width: Int, maxLines: Int?) -> [String] {
+  func reflowText(
+    width: Int,
+    maxLines: Int?,
+    paddingCharacter: Character = " "
+  ) -> [String] {
     
     var lines: [String] = []
     
     if let maxLines = maxLines {
-      lines = Array(processReflow(text: self, width: width).prefix(maxLines))
+      lines = Array(
+        processReflow(
+          text: self,
+          width: width,
+          paddingCharacter: paddingCharacter
+        ).prefix(maxLines)
+      )
     } else {
-      lines = processReflow(text: self, width: width)
+      lines = processReflow(
+        text: self,
+        width: width,
+        paddingCharacter: paddingCharacter
+      )
     }
     
     return lines
   }
-  
-  
+
   private func processReflow(
     text: String,
     width: Int,
