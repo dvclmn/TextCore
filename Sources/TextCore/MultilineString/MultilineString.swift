@@ -19,6 +19,13 @@ public struct MultilineString {
   public init(_ grid: [[Character]]) {
     self.grid = grid
   }
+  
+  public init(_ string: String) {
+    let lines = string.split(separator: "\n", omittingEmptySubsequences: false)
+    self.init(lines.map { Array($0) })
+  }
+
+  
 }
 
 public extension MultilineString {

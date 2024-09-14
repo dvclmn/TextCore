@@ -9,17 +9,16 @@
 
 public extension MultilineString {
   
-  static func repeatHorizontally(
-    _ part: MultilineString,
+  func repeatHorizontally(
     toWidth width: Int,
     paddingCharacter: Character = " ",
     trimMethod: TrimMethod = .crop // Need to implement this
   ) -> MultilineString {
     
-    guard !part.isEmpty else { return MultilineString([]) }
+    guard !self.isEmpty else { return MultilineString([]) }
     
-    let patternWidth = part.width
-    let patternHeight = part.height
+    let patternWidth = self.width
+    let patternHeight = self.height
     
     let repetitions = width / patternWidth
     let remainder = width % patternWidth
@@ -29,16 +28,16 @@ public extension MultilineString {
     for row in 0..<patternHeight {
       var newRow: [Character] = []
       for _ in 0..<repetitions {
-        newRow.append(contentsOf: part[row])
+        newRow.append(contentsOf: self[row])
       }
       
       if remainder > 0 {
         switch trimMethod {
           case .leaveSpace:
-            newRow.append(contentsOf: part[row][0..<remainder])
+            newRow.append(contentsOf: self[row][0..<remainder])
             newRow.append(contentsOf: Array(repeating: paddingCharacter, count: patternWidth - remainder))
           case .crop:
-            newRow.append(contentsOf: part[row][0..<remainder])
+            newRow.append(contentsOf: self[row][0..<remainder])
         }
       }
       result.append(newRow)
