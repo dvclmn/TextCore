@@ -15,6 +15,7 @@ public typealias AttributedRange = Range<AttributedString.Index>
 
 public typealias ThreePartRange = (AttributedRange, AttributedRange, AttributedRange)
 
+public typealias CharacterGrid = [[Character]]
 
 /// The first `Substring` is reserved for the full match. The subsequent three can be used
 /// in whatever way makes sense. E.g. for content surrounded by syntax, such as `*italics*`.
