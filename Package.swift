@@ -16,15 +16,9 @@ let package = Package(
       targets: ["TextCore"]
     )
   ],
-  dependencies: [
-    .package(name: "Helpers", path: "\(localPackagesRoot)/SwiftCollection/Helpers"),
-    .package(name: "Styles", path: "\(localPackagesRoot)/Styles"),
-  ],
   targets: [
-    .target(
-      name: "TextCore",
-      dependencies: ["Helpers", "Styles"]
-    ),
+    .target(name: "TextCore"),
+    
     .testTarget(
       name: "TextCoreTests",
       dependencies: ["TextCore"]
