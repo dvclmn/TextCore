@@ -7,11 +7,14 @@
 
 import Foundation
 
-public typealias Artwork = [[Character]]
 
 
-public extension Artwork {
-  static let `default`: Artwork = [["N"],["o"],[" "],["a"],["r"],["t"]]
+//extension GlyphGrid.Artwork: Equatable {
+//  
+//}
+
+public extension GlyphGrid.Artwork {
+  static let `default`: GlyphGrid.Artwork = [["N"],["o"],[" "],["a"],["r"],["t"]]
   
-  static let empty: Artwork = [[Character(" ")]]
+  static let empty: GlyphGrid.Artwork = [[Character(" ")]]
 }

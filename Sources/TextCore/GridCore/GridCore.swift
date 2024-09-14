@@ -9,6 +9,8 @@ import Foundation
 
 public struct GlyphGrid: Equatable, Sendable {
   
+  public typealias Artwork = [[Character]]
+  
   public var cell: GlyphCell
   public var dimensions: GridDimensions
   public var type: GridType
@@ -122,7 +124,7 @@ public struct GridDimensions: Equatable, Sendable {
 ///
 
 public enum GridType: Equatable, Sendable {
-  case canvas(Artwork)
+  case canvas(GlyphGrid.Artwork)
   case interface
 }
 

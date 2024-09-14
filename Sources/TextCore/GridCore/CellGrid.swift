@@ -99,7 +99,7 @@ struct CellGridExample: View {
   let grid = GlyphGrid(
     cell: .init(fontName: .sfMono),
     dimensions: GridDimensions(rows: 20, columns: 30),
-    type: .canvas(Artwork.default)
+    type: .canvas(GlyphGrid.Artwork.default)
   )
   
   var body: some View {

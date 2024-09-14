@@ -43,13 +43,14 @@ public extension TextCore {
         result.appendString(compactOutput, addsLineBreak: false)
         result.addLineBreak()
         
-        result.appendString(
-          String.repeating(
-            ".",
-            alternating: "|",
-            every: 5,
-            totalCount: width
-          ), addsLineBreak: false
+        let pattern = String.pattern(totalCount: width) {
+          character("|")
+          repeating(".", count: 4)
+          character("╷")
+          repeating(".", count: 4)
+        }
+        
+        result.appendString(pattern, addsLineBreak: false
         )
         result.addLineBreak()
         
