@@ -256,16 +256,6 @@ public extension AttributedString {
     //    self.characters.append("\n")
   }
   
-  //
-  //  func appendString(_ newString: String) -> AttributedString {
-  //
-  //    var result = self
-  //
-  //    result.characters.append(contentsOf: newString)
-  //
-  //    return result
-  //  }
-  
 }
 
 
@@ -335,10 +325,10 @@ public struct MultiLineAttributedString {
   
 }
 
-public extension MultiLineAttributedString {
-  static func +(lhs: MultiLineAttributedString, rhs: MultiLineAttributedString) -> MultiLineAttributedString {
-    var result = lhs
-    result.append(rhs)
-    return result
-  }
-}
+//public extension MultiLineAttributedString {
+//  static func +(lhs: MultiLineAttributedString, rhs: MultiLineAttributedString) -> MultiLineAttributedString {
+//    var result = lhs
+//    result.append(rhs)
+//    return result
+//  }
+//}

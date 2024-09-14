@@ -1,8 +1,8 @@
 //
-//  BinaryFloatingPoint.swift
+//  SnapToCell.swift
 //  TextCore
 //
-//  Created by Dave Coleman on 31/8/2024.
+//  Created by Dave Coleman on 14/9/2024.
 //
 
 import Foundation
@@ -27,8 +27,6 @@ public extension BinaryFloatingPoint {
       
       return .zero
     }
-    
-    
     
   }
 }

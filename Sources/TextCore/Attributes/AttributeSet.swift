@@ -9,36 +9,12 @@
 import AppKit
 import Foundation
 
-/// Is this a bit like `AttributeContainer`, for `NSAttributedString`?
-///
 
 public typealias Attributes = [NSAttributedString.Key: Any]
 
-public extension Attributes {
-  
-  static let white: Attributes = [
-    .foregroundColor: NSColor.textColor.withAlphaComponent(0.9)
-  ]
-  
-  static let highlighter: Attributes = [
-    .foregroundColor: NSColor.yellow,
-    .backgroundColor: NSColor.orange.withAlphaComponent(0.6)
-  ]
-  
-  static let codeBlock: Attributes = [
-    .foregroundColor: NSColor.white,
-    .backgroundColor: NSColor.darkGray,
-    .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
-  ]
-  
-}
-
-extension Attributes: Sendable {
-  
-}
-
 public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
-  nonisolated(unsafe) public var attributes: Attributes
+  
+  public var attributes: Attributes
   
   public init(dictionaryLiteral elements: (Attributes.Key, Attributes.Value)...) {
     self.attributes = Dictionary(uniqueKeysWithValues: elements)
@@ -54,14 +30,18 @@ public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
   }
 }
 
-extension AttributeSet {
+public extension AttributeSet {
   
-  public static let highlighter: AttributeSet = [
+  static let white: AttributeSet = [
+    .foregroundColor: NSColor.textColor.withAlphaComponent(0.9)
+  ]
+  
+  static let highlighter: AttributeSet = [
     .foregroundColor: NSColor.yellow,
     .backgroundColor: NSColor.orange.withAlphaComponent(0.6)
   ]
   
-  public static let codeBlock: AttributeSet = [
+  static let codeBlock: AttributeSet = [
     .foregroundColor: NSColor.white,
     .backgroundColor: NSColor.darkGray,
     .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)

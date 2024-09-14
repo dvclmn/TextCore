@@ -9,17 +9,14 @@ import AppKit
 
 public extension NSMutableAttributedString {
   
-  @MainActor func setAttributesCustom(
+  @MainActor func setAttributeSet(
     _ attributeSet: AttributeSet,
     range: NSRange,
     with typingAttributes: Attributes? = nil
   ) {
     
     if let typingAttributes = typingAttributes {
-      
-      //      setAttributes(attributeSet.attributes.merging(typingAttributes, uniquingKeysWith: { key, value in
-      //
-      //      }), range: range)
+
       setAttributes(attributeSet.attributes, range: range)
       addAttributes(typingAttributes, range: range)
     } else {
