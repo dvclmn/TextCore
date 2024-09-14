@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-//import BaseHelpers
 import Foundation
+
+public typealias StringCaps = (leading: String, trailing: String)
 
 public enum PaddedContentType {
   case text
@@ -79,7 +80,7 @@ public struct TextCore {
     
     /// Cap content, space and width
     ///
-    var finalCaps: (leading: String, trailing: String) = ("", "")
+    var finalCaps: StringCaps = ("", "")
     var capsSpaceCount: (leading: Int, trailing: Int) = (0, 0)
     
     /// Building not only the cap glyphs themselves, but also the spaces if applicable
@@ -121,7 +122,7 @@ public struct TextCore {
     ///
     
     let textExtraSpaceCharacter: String = hasSpaceAroundText ? "^" : ""
-    var textExtraSpace: (leading: String, trailing: String) = ("", "")
+    var textExtraSpace: StringCaps = ("", "")
     var textSpaceCount: (leading: Int, trailing: Int) = (0, 0)
     
     
