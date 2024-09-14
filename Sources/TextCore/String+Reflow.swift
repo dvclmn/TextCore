@@ -6,54 +6,27 @@
 //
 
 
+public enum WordWrapStrategy {
+  case hyphenate
+  case wrap
+//  case crop
+}
 
 public extension String {
-  
-  enum WrappingOption {
-    case hyphenate
-    case wrap
-  }
   
   func reflowText(
     width: Int,
     maxLines: Int = 0,
-    paddingCharacter: Character = " "
-  ) -> [String] {
-    
-    var lines: [String] = []
-    
-    if maxLines > 0 {
-      lines = Array(
-        processReflow(
-          text: self,
-          width: width,
-          paddingCharacter: paddingCharacter
-        ).prefix(maxLines)
-      )
-    } else {
-      lines = processReflow(
-        text: self,
-        width: width,
-        paddingCharacter: paddingCharacter
-      )
-    }
-    
-    return lines
-  }
-  
-  private func processReflow(
-    text: String,
-    width: Int,
     paddingCharacter: Character = " ",
-    wrappingOption: WrappingOption = .wrap
+    wrappingOption: WordWrapStrategy = .wrap
   ) -> [String] {
-    
+
     guard width > 0 else {
       print("Error: Width must be positive")
       return []
     }
     
-    let paragraphs = text.components(separatedBy: .newlines)
+    let paragraphs = self.components(separatedBy: .newlines)
     var reflowedLines: [String] = []
     
     for paragraph in paragraphs {
@@ -76,7 +49,7 @@ public extension String {
           currentLine += " \(word)"
         } else {
           // Add the current line to reflowedLines
-          reflowedLines.append(padLine(currentLine, toWidth: width, with: paddingCharacter))
+          reflowedLines.append(padLine(currentLine, toFill: width, with: paddingCharacter))
           
           // Handle word exceeding width
           if word.count > width {
@@ -88,32 +61,34 @@ public extension String {
           }
         }
       }
-
-
-
+      
+      
+      
       
       if !currentLine.isEmpty {
-        // Safely pad the last line of the paragraph
-        let paddingCount = max(0, width - currentLine.count)
-        currentLine += String(repeating: paddingCharacter, count: paddingCount)
-        reflowedLines.append(currentLine)
+        reflowedLines.append(padLine(currentLine, toFill: width, with: paddingCharacter))
       }
     }
     
-    //    print(reflowedLines)
+    if maxLines > 0 {
+      reflowedLines = Array(reflowedLines.prefix(maxLines))
+    }
+    
     return reflowedLines
   }
   
   
   
-  private func padLine(_ line: String, toWidth width: Int, with character: Character) -> String {
+  private func padLine(
+    _ line: String,
+    toFill width: Int,
+    with character: Character
+  ) -> String {
     let paddingCount = max(0, width - line.count)
     return line + String(repeating: character, count: paddingCount)
   }
-
   
-  
-  private func wrapLongWord(_ word: String, width: Int, option: WrappingOption) -> [String] {
+  private func wrapLongWord(_ word: String, width: Int, option: WordWrapStrategy) -> [String] {
     var wrappedWords: [String] = []
     var remainingWord = word
     
@@ -134,12 +109,15 @@ public extension String {
           let line = remainingWord.prefix(splitIndex)
           wrappedWords.append(String(line))
           remainingWord = String(remainingWord.dropFirst(splitIndex))
+//        case .crop:
+//          let line = remainingWord.prefix(width)
+//          wrappedWords.append(String(line))
+//          break // Stop processing after cropping
       }
     }
     
     return wrappedWords
   }
-
   
   
   
