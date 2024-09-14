@@ -99,28 +99,3 @@ extension MultilineString: Sequence {
   }
   
 }
-
-// Operator overloading for concatenation
-public func + (lhs: MultilineString, rhs: MultilineString) -> MultilineString {
-  let maxHeight = max(lhs.height, rhs.height)
-  var result = MultilineString([])
-  
-  for i in 0..<maxHeight {
-    let leftRow = i < lhs.height ? lhs[i] : []
-    let rightRow = i < rhs.height ? rhs[i] : []
-    result.append(leftRow + rightRow)
-  }
-  
-  return result
-}
-
-// For repeating a MultilineString
-public func * (lhs: MultilineString, rhs: Int) -> MultilineString {
-  var result = MultilineString([])
-  for _ in 0..<rhs {
-    result = result + lhs
-  }
-  return result
-}
-
-
