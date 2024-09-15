@@ -11,13 +11,17 @@ public enum WordWrapStrategy {
   case wrap
 //  case crop
 }
+public enum PaddingBookend {
+  case none
+  case both(width: Int)
+}
 
 public extension String {
   
   func reflowText(
     width: Int,
     maxLines: Int = 0,
-    padding: Int = 1, // leading and trailing
+    paddingWidth: Int = 1, // leading and trailing
     paddingCharacter: Character = " ",
     wrappingOption: WordWrapStrategy = .wrap
   ) -> [String] {
@@ -28,7 +32,7 @@ public extension String {
     }
     
     // Calculate the effective width for text content
-    let effectiveWidth = width - (2 * padding)
+    let effectiveWidth = width - (2 * paddingWidth)
     guard effectiveWidth > 0 else {
       print("Error: Width is too small to accommodate padding")
       return []
@@ -52,13 +56,17 @@ public extension String {
         } else if currentLine.count + word.count + 1 <= effectiveWidth {
           currentLine += " \(word)"
         } else {
-          // Add the current line to reflowedLines with padding
-          reflowedLines.append(addPadding(to: currentLine, width: width, padding: padding, paddingCharacter: paddingCharacter))
+          
+          reflowedLines.append(currentLine.padLine(toFill: width, with: paddingCharacter, bookends: .both(width: paddingWidth)))
           
           // Handle word exceeding width
           if word.count > effectiveWidth {
             let wrappedWords = wrapLongWord(String(word), width: effectiveWidth, option: wrappingOption)
-            reflowedLines.append(contentsOf: wrappedWords.dropLast().map { addPadding(to: $0, width: width, padding: padding, paddingCharacter: paddingCharacter) })
+            
+            
+            reflowedLines.append(contentsOf: wrappedWords.dropLast().map {
+              $0.padLine(toFill: width, with: paddingCharacter, bookends: .both(width: paddingWidth))
+            })
             currentLine = wrappedWords.last ?? ""
           } else {
             currentLine = String(word)
@@ -67,7 +75,7 @@ public extension String {
       }
       
       if !currentLine.isEmpty {
-        reflowedLines.append(addPadding(to: currentLine, width: width, padding: padding, paddingCharacter: paddingCharacter))
+        reflowedLines.append(currentLine.padLine(toFill: width, with: paddingCharacter, bookends: .both(width: paddingWidth)))
       }
     }
     
@@ -77,21 +85,28 @@ public extension String {
     
     return reflowedLines
   }
-  
-  // Helper function to add padding to a line
-  func addPadding(to line: String, width: Int, padding: Int, paddingCharacter: Character) -> String {
-    let paddingString = String(repeating: paddingCharacter, count: padding)
-    let paddedLine = paddingString + line + paddingString
-    return padLine(paddedLine, toFill: width, with: paddingCharacter)
-  }
-  
+
   private func padLine(
-    _ line: String,
     toFill width: Int,
-    with character: Character
+    with character: Character,
+    bookends: PaddingBookend = .none
   ) -> String {
-    let paddingCount = max(0, width - line.count)
-    return line + String(repeating: character, count: paddingCount)
+    
+    var result: String = self
+    
+    switch bookends {
+      case .both(let bookendWidth):
+        let bookendPadding = String(repeating: character, count: bookendWidth)
+        result = bookendPadding + result + bookendPadding
+      case .none:
+        break
+    }
+    
+    let remainingWidth = max(0, width - result.count)
+    result += String(repeating: character, count: remainingWidth)
+    
+    return result
+
   }
   
   private func wrapLongWord(_ word: String, width: Int, option: WordWrapStrategy) -> [String] {
