@@ -1,6 +1,6 @@
 //
 //  WidthCounterStyle.swift
-//  SwiftBox
+//  BoxCore
 //
 //  Created by Dave Coleman on 29/8/2024.
 //
@@ -11,7 +11,7 @@ import SwiftUI
 
 public extension TextCore {
   
-  enum WidthCounterStyle {
+  enum WidthCounterStyle: Sendable {
     case off
     case compact
     case full

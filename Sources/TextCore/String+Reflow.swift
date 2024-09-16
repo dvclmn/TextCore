@@ -6,7 +6,7 @@
 //
 
 
-public enum WordWrapStrategy {
+public enum WordWrapStrategy: Sendable {
   case hyphenate
   case wrap
 //  case crop

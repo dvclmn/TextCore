@@ -31,7 +31,7 @@ public struct MultilineString {
 public extension MultilineString {
   
   
-  public var string: String {
+  var string: String {
     grid.map { String($0) }.joined(separator: "\n")
   }
   

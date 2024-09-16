@@ -196,8 +196,8 @@ public struct TextCore {
       /// components — always one less than the number of components.
       ///
       
-      var hasLeadingSplit: Bool = false
-      var hasTrailingSplit: Bool = false
+//      var hasLeadingSplit: Bool = false
+//      var hasTrailingSplit: Bool = false
       
       
       let paddingPerSlice: Int = availableSpace / (splitTextChunk.count - 1)

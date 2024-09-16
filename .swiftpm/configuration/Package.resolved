@@ -1,0 +1,15 @@
+{
+  "originHash" : "22c235d2bb7909c1a3edfbb47363e4a2821ea33d0d93238cca383c526637b33f",
+  "pins" : [
+    {
+      "identity" : "nsui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattmassicotte/nsui",
+      "state" : {
+        "revision" : "8792b2f789bf03be1be9ecb4df43d2bfe0e5d361",
+        "version" : "1.3.0"
+      }
+    }
+  ],
+  "version" : 3
+}

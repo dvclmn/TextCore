@@ -1,6 +1,6 @@
 //
 //  CharacterSets.swift
-//  SwiftBox
+//  BoxCore
 //
 //  Created by Dave Coleman on 27/8/2024.
 //
