@@ -7,8 +7,8 @@ let localPackagesRoot = "/Users/dvclmn/Apps/_ Swift Packages"
 let package = Package(
   name: "TextCore",
   platforms: [
-    .iOS("17.0"),
-    .macOS("14.0")
+    .iOS("16.0"),
+    .macOS("12.0")
   ],
   products: [
     .library(
@@ -16,8 +16,11 @@ let package = Package(
       targets: ["TextCore"]
     )
   ],
+  dependencies: [
+    .package(url: "https://github.com/mattmassicotte/nsui", from: "1.3.0")
+  ],
   targets: [
-    .target(name: "TextCore"),
+    .target(name: "TextCore", dependencies: [.product(name: "NSUI", package: "nsui")]),
     
     .testTarget(
       name: "TextCoreTests",

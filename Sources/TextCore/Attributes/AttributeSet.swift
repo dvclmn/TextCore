@@ -6,8 +6,9 @@
 //
 
 
-import AppKit
 import Foundation
+import NSUI
+
 
 
 public typealias Attributes = [NSAttributedString.Key: Any]
@@ -33,18 +34,18 @@ public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
 public extension AttributeSet {
   
   static let white: AttributeSet = [
-    .foregroundColor: NSColor.textColor.withAlphaComponent(0.9)
+    .foregroundColor: NSUIColor.label
   ]
   
   static let highlighter: AttributeSet = [
-    .foregroundColor: NSColor.yellow,
-    .backgroundColor: NSColor.orange.withAlphaComponent(0.6)
+    .foregroundColor: NSUIColor.yellow,
+    .backgroundColor: NSUIColor.orange.withAlphaComponent(0.6)
   ]
   
   static let codeBlock: AttributeSet = [
-    .foregroundColor: NSColor.white,
-    .backgroundColor: NSColor.darkGray,
-    .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+    .foregroundColor: NSUIColor.white,
+    .backgroundColor: NSUIColor.darkGray,
+    .font: NSUIFont.monospacedSystemFont(ofSize: 12, weight: .regular)
   ]
 }
 
