@@ -42,4 +42,18 @@ public extension AttributeContainer {
     return container
     
   }
+
+  func getAttributes<S: AttributeScope>(for scope: KeyPath<AttributeScopes, S.Type>) -> [NSAttributedString.Key: Any]? {
+    do {
+      return try Dictionary(self, including: scope)
+    } catch {
+      return nil
+    }
+  }
+  
+  /// Overload, to allow `\.appKit` as default
+  func getAttributes() -> [NSAttributedString.Key: Any]? {
+    return getAttributes(for: \.appKit)
+  }
+  
 }

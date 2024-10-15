@@ -169,8 +169,11 @@ struct WidthCounterView: View {
       .background(.black.opacity(0.6))
   }
 }
+
+#if DEBUG
 #Preview {
   WidthCounterView()
 }
 
 
+#endif

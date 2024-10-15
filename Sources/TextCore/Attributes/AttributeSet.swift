@@ -14,8 +14,8 @@ import NSUI
 public typealias Attributes = [NSAttributedString.Key: Any]
 
 
-
-public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
+@MainActor
+public struct AttributeSet: @preconcurrency ExpressibleByDictionaryLiteral {
   
   public var attributes: Attributes
   
@@ -36,7 +36,8 @@ public struct AttributeSet: ExpressibleByDictionaryLiteral, Sendable {
 public extension AttributeSet {
   
   static let white: AttributeSet = [
-    .foregroundColor: NSUIColor.label
+    .foregroundColor: NSUIColor.label,
+    .backgroundColor: NSUIColor.clear
   ]
   
   static let highlighter: AttributeSet = [
@@ -51,7 +52,7 @@ public extension AttributeSet {
   ]
 }
 
-extension AttributeSet: Sequence {
+extension AttributeSet: @preconcurrency Sequence {
   
   public func makeIterator() -> Dictionary<NSAttributedString.Key, Any>.Iterator {
     return attributes.makeIterator()

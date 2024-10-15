@@ -47,8 +47,6 @@ public extension AttributedString {
     let string = String(self.characters)
     let matches = string.matches(of: pattern)
     
-    
-    
     var ranges: [Range<AttributedString.Index>] = []
     
     for match in matches {

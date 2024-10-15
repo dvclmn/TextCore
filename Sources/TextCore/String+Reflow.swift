@@ -47,32 +47,42 @@ public extension String {
         continue
       }
       
-      let words = paragraph.split(separator: " ")
-      var currentLine = ""
+      // Preserve leading whitespace
+      let leadingWhitespace = paragraph.prefix(while: { $0.isWhitespace })
+      let trimmedParagraph = paragraph.dropFirst(leadingWhitespace.count)
+
+      let words = trimmedParagraph.split(separator: " ", omittingEmptySubsequences: false)
+      var currentLine = String(leadingWhitespace)
+
       
       for word in words {
-        if currentLine.isEmpty && word.count <= effectiveWidth {
-          currentLine = String(word)
-        } else if currentLine.count + word.count + 1 <= effectiveWidth {
-          currentLine += " \(word)"
+        let wordString = String(word)
+        
+        if currentLine == String(leadingWhitespace) && (currentLine.count + wordString.count) <= effectiveWidth {
+          currentLine += wordString
+        } else if currentLine.count + wordString.count + 1 <= effectiveWidth {
+          if !currentLine.isEmpty && currentLine != String(leadingWhitespace) {
+            currentLine += " "
+          }
+          currentLine += wordString
         } else {
           
           reflowedLines.append(currentLine.padLine(toFill: width, with: paddingCharacter, bookends: .both(width: paddingWidth)))
           
           // Handle word exceeding width
-          if word.count > effectiveWidth {
-            let wrappedWords = wrapLongWord(String(word), width: effectiveWidth, option: wrappingOption)
-            
+          if wordString.count > effectiveWidth {
+            let wrappedWords = wrapLongWord(wordString, width: effectiveWidth, option: wrappingOption)
             
             reflowedLines.append(contentsOf: wrappedWords.dropLast().map {
               $0.padLine(toFill: width, with: paddingCharacter, bookends: .both(width: paddingWidth))
             })
             currentLine = wrappedWords.last ?? ""
           } else {
-            currentLine = String(word)
+            currentLine = String(leadingWhitespace) + wordString
           }
         }
       }
+
       
       if !currentLine.isEmpty {
         reflowedLines.append(currentLine.padLine(toFill: width, with: paddingCharacter, bookends: .both(width: paddingWidth)))

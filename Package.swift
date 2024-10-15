@@ -2,8 +2,6 @@
 
 import PackageDescription
 
-let localPackagesRoot = "/Users/dvclmn/Apps/_ Swift Packages"
-
 let package = Package(
   name: "TextCore",
   platforms: [
@@ -17,10 +15,14 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/mattmassicotte/nsui", from: "1.3.0")
+    .package(url: "https://github.com/mattmassicotte/nsui", from: "1.3.0"),
+    .package(url: "https://github.com/ChimeHQ/Rearrange.git", from: "1.8.1")
   ],
   targets: [
-    .target(name: "TextCore", dependencies: [.product(name: "NSUI", package: "nsui")]),
+    .target(name: "TextCore", dependencies: [
+      .product(name: "NSUI", package: "nsui"),
+      "Rearrange"
+    ]),
     
     .testTarget(
       name: "TextCoreTests",
