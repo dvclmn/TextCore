@@ -7,9 +7,7 @@
 
 
 import Foundation
-import NSUI
-
-
+//import NSUI
 
 public typealias Attributes = [NSAttributedString.Key: Any]
 
@@ -33,24 +31,24 @@ public struct AttributeSet: @preconcurrency ExpressibleByDictionaryLiteral {
   }
 }
 
-public extension AttributeSet {
-  
-  static let white: AttributeSet = [
-    .foregroundColor: NSUIColor.label,
-    .backgroundColor: NSUIColor.clear
-  ]
-  
-  static let highlighter: AttributeSet = [
-    .foregroundColor: NSUIColor.yellow,
-    .backgroundColor: NSUIColor.orange.withAlphaComponent(0.6)
-  ]
-  
-  static let codeBlock: AttributeSet = [
-    .foregroundColor: NSUIColor.white,
-    .backgroundColor: NSUIColor.darkGray,
-    .font: NSUIFont.monospacedSystemFont(ofSize: 12, weight: .regular)
-  ]
-}
+//public extension AttributeSet {
+//  
+//  static let white: AttributeSet = [
+//    .foregroundColor: NSUIColor.label,
+//    .backgroundColor: NSUIColor.clear
+//  ]
+//  
+//  static let highlighter: AttributeSet = [
+//    .foregroundColor: NSUIColor.yellow,
+//    .backgroundColor: NSUIColor.orange.withAlphaComponent(0.6)
+//  ]
+//  
+//  static let codeBlock: AttributeSet = [
+//    .foregroundColor: NSUIColor.white,
+//    .backgroundColor: NSUIColor.darkGray,
+//    .font: NSUIFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+//  ]
+//}
 
 extension AttributeSet: @preconcurrency Sequence {
   

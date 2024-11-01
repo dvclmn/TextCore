@@ -14,4 +14,8 @@ public extension String {
       .joined(separator: "\n")
   }
   
+
+  func components(separatedBy separator: Character) -> [String] {
+    return self.split(separator: separator).map(String.init)
+  }
 }

@@ -14,15 +14,8 @@ let package = Package(
       targets: ["TextCore"]
     )
   ],
-  dependencies: [
-    .package(url: "https://github.com/mattmassicotte/nsui", from: "1.3.0"),
-    .package(url: "https://github.com/ChimeHQ/Rearrange.git", from: "1.8.1")
-  ],
   targets: [
-    .target(name: "TextCore", dependencies: [
-      .product(name: "NSUI", package: "nsui"),
-      "Rearrange"
-    ]),
+    .target(name: "TextCore"),
     
     .testTarget(
       name: "TextCoreTests",
